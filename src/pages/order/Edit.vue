@@ -113,6 +113,7 @@
             <a-date-picker
               v-model="form.submission_time"
               valueFormat="YYYY-MM-DD"
+              :disabled="isService"
             />
           </a-form-model-item>
         </a-col>
@@ -192,7 +193,14 @@ export default {
       form: {},
       previewVisible: false,
       previewUrl: "",
+      isService: false,
+      isEditor: false,
     };
+  },
+  created() {
+    let user = this.$auth.user();
+    this.isService = user.roles.find((_) => _.alias == "staff");
+    console.log(this.isService);
   },
   watch: {
     visible(e) {

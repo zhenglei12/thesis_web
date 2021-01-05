@@ -31,6 +31,7 @@
         pageSize: collection.pageSize,
         showSizeChanger: true,
       }"
+      :rowClassName="getRowClass"
       bordered
       rowKey="id"
       @change="listChange"
@@ -294,6 +295,20 @@ export default {
         this.statistic = res;
       });
     },
+    getRowClass(data) {
+      switch (data.status) {
+        case "1":
+          return "bg-yellow";
+        case "2":
+          return "bg-pink";
+        case "3":
+          return "bg-blue";
+        case "4":
+          return "bg-green";
+        default:
+          break;
+      }
+    },
     toStatus(e) {
       this.temp = e;
       this.statusVisible = true;
@@ -352,9 +367,32 @@ export default {
     }
   }
 }
+
 .image {
   max-width: 90px;
   max-height: 90px;
   cursor: pointer;
+}
+
+/deep/ .bg {
+  &-pink {
+    background-color: #fbe5e2;
+  }
+
+  &-green {
+    background-color: #75f98d;
+  }
+
+  &-yellow {
+    background-color: #fbfd87;
+  }
+
+  &-blue {
+    background-color: #a3ccfa;
+  }
+}
+
+/deep/ tr:hover > td {
+  background-color: inherit !important;
 }
 </style>
