@@ -1,8 +1,7 @@
 import axios from 'axios';
 import Vue from 'vue';
 import AuthHandler from './auth.handler';
-
-console.log(new Vue());
+import acl from './acl';
 
 const _axios = axios.create({
     timeout: 30000,
@@ -85,11 +84,17 @@ _axios.interceptors.response.use(
 
 class HttpManager {
     get(url, params, options = {}) {
+        if (!acl.verify(options.acl)) {
+            return Promise.reject('无权限');
+        }
         return _axios.get(url, Object.assign({}, options, {
             params: params
         }));
     }
     post(url, parmas, options = {}) {
+        if (!acl.verify(options.acl)) {
+            return Promise.reject('无权限');
+        }
         return _axios.post(url, parmas, options);
     }
 }
