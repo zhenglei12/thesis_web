@@ -7,4 +7,5 @@ export default {
     update: (data) => http.post('api/order/update', data),
     allot: (data) => http.post('api/order/edit_name', data),
     status: (data) => http.post('api/order/status', data),
+    upload: (data) => http.post('api/order/manuscript', data),
 }

@@ -47,7 +47,13 @@
       <template slot="money" slot-scope="data">
         <p>订单总额：{{ data.amount }}</p>
         <p>已收金额：{{ data.received_amount }}</p>
-        <p>未收尾款：{{ data.amount - data.received_amount }}</p>
+        <p>
+          未收尾款：{{
+            data.amount - data.received_amount > 0
+              ? data.amount - data.received_amount
+              : "已结清"
+          }}
+        </p>
       </template>
       <template slot="image" slot-scope="data">
         <img
@@ -65,14 +71,22 @@
       <template slot="status" slot-scope="data">
         {{ orderStatusMap[data] }}
       </template>
+      <template slot="file" slot-scope="data">
+        <a v-if="data" @click="toDownload(data)">下载稿件</a>
+        <span v-else>未提交</span>
+      </template>
       <template slot="operate" slot-scope="data">
         <div class="cus-nowrap">
           <template>
             <a-icon type="edit" title="编辑" @click="toEdit(data)" />
             <a-divider type="vertical"></a-divider>
           </template>
-          <template v-if="!data.edit_name">
+          <template>
             <a-icon type="api" title="分配编辑" @click="toAllot(data.id)" />
+            <a-divider type="vertical"></a-divider>
+          </template>
+          <template>
+            <a-icon type="upload" title="上传稿件" @click="toUpload(data.id)" />
             <a-divider type="vertical"></a-divider>
           </template>
           <!-- <template>
@@ -102,6 +116,13 @@
       :data="temp"
       @refresh="_getList"
     ></cus-status>
+
+    <!-- 上传稿件 -->
+    <cus-upload
+      v-model="uploadVisible"
+      :data="temp"
+      @refresh="_getList"
+    ></cus-upload>
 
     <!-- 详情 -->
     <!-- <cus-detail
@@ -229,6 +250,11 @@ const columns = [
     dataIndex: "remark",
   },
   {
+    title: "稿件下载",
+    dataIndex: "manuscript",
+    scopedSlots: { customRender: "file" },
+  },
+  {
     title: "操作",
     scopedSlots: { customRender: "operate" },
   },
@@ -241,6 +267,7 @@ import Utils from "../../libs/utils";
 import CusEdit from "./Edit";
 import CusStatus from "./Status";
 import CusAllot from "./Allot";
+import CusUpload from "./Upload";
 import { taskTypeMap, orderStatusMap } from "./mapping";
 
 export default {
@@ -248,6 +275,7 @@ export default {
     CusEdit,
     CusAllot,
     CusStatus,
+    CusUpload,
   },
   mixins: [listMixin],
   data() {
@@ -263,6 +291,7 @@ export default {
       statusVisible: false,
       allotVisible: false,
       previewVisible: false,
+      uploadVisible: false,
       previewUrl: "",
       editorList: [],
     };
@@ -271,16 +300,20 @@ export default {
     this.getStatistic();
     PublicApi.roleUserList("staff").then((res) => {
       let temp = this.condition.find((_) => _.key == "staff_name");
-      temp.options = res.list;
+      if (temp) {
+        temp.options = res.list;
+      }
     });
     PublicApi.roleUserList("edit").then((res) => {
       let temp = this.condition.find((_) => _.key == "edit_name");
       this.editorList = res.list;
-      temp.options = res.list;
+      if (temp) {
+        temp.options = res.list;
+      }
     });
     let user = this.$auth.user();
-    this.isService = user.roles.find((_) => _.alias == "staff");
-    this.isEditor = user.roles.find((_) => _.alias == "edit");
+    this.isService = !!user.roles.find((_) => _.alias == "staff");
+    this.isEditor = !!user.roles.find((_) => _.alias == "edit");
     if (this.isService) {
       this.condition = this.condition.filter((_) => _.key != "staff_name");
     }
@@ -302,6 +335,7 @@ export default {
         case "2":
           return "bg-pink";
         case "3":
+        case "5":
           return "bg-blue";
         case "4":
           return "bg-green";
@@ -332,6 +366,10 @@ export default {
       Utils.download(e, e.split("/").pop()).then(() => {
         this.$message.success("下载完成");
       });
+    },
+    toUpload(e) {
+      this.temp = e;
+      this.uploadVisible = true;
     },
     _getList() {
       this.collection.loading = true;

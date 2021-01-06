@@ -33,12 +33,20 @@
       <a-row>
         <a-col span="12">
           <a-form-model-item label="订单总额">
-            <a-input-number v-model="form.amount" :min="0" />
+            <a-input-number
+              v-model="form.amount"
+              :min="0"
+              :disabled="isService"
+            />
           </a-form-model-item>
         </a-col>
         <a-col span="12">
           <a-form-model-item label="已收金额">
-            <a-input-number v-model="form.received_amount" :min="0" />
+            <a-input-number
+              v-model="form.received_amount"
+              :min="0"
+              :disabled="isService"
+            />
           </a-form-model-item>
         </a-col>
       </a-row>
@@ -199,7 +207,7 @@ export default {
   },
   created() {
     let user = this.$auth.user();
-    this.isService = user.roles.find((_) => _.alias == "staff");
+    this.isService = !!user.roles.find((_) => _.alias == "staff");
     console.log(this.isService);
   },
   watch: {
