@@ -91,8 +91,8 @@ export default {
     width: 350px;
     box-sizing: content-box;
     top: 50%;
-    right: 150px;
-    transform: translateY(-50%);
+    left: 50%;
+    transform: translate(-50%, -50%);
     background: #ffffff;
     padding: 40px 20px;
     border-radius: 4px;

@@ -92,7 +92,7 @@
         label="写作要求"
       >
         <a-textarea
-          v-model="form.wr_where"
+          v-model="form.task_ask"
           :autoSize="{ minRows: 3, maxRows: 5 }"
           placeholder="写作要求"
         />
@@ -225,7 +225,6 @@ export default {
           amount: this.R.amount,
           received_amount: this.R.received_amount,
           pay_type: this.R.pay_type,
-          wr_where: this.R.wr_where,
           remark: this.R.remark,
         };
         this.askList = this.R.detail_re
