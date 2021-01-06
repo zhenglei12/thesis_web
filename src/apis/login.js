@@ -1,7 +1,4 @@
 import http from '../libs/http';
-import cache from '../libs/cache';
-
-console.log(http, cache);
 
 export default {
     login: (data) => http.post('api/auth/login', data),

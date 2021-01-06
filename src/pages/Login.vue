@@ -80,7 +80,7 @@ export default {
 <style lang="less" scoped>
 .wraper {
   height: 100%;
-  background-image: url("~@/assets/login.jpg");
+  // background-image: url("~@/assets/login.jpg");
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center;

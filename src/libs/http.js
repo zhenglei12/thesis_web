@@ -2,6 +2,8 @@ import axios from 'axios';
 import Vue from 'vue';
 import AuthHandler from './auth.handler';
 
+console.log(new Vue());
+
 const _axios = axios.create({
     timeout: 30000,
     baseURL: process.env.VUE_APP_BASE_API,
@@ -61,10 +63,9 @@ _axios.interceptors.response.use(
         if (config.ignore === true) {
             return Promise.reject(response);
         }
-        console.log(response);
         if (response.status === 401) {
             console.log('去登录');
-            new Vue().$router.push('/login');
+            new Vue().$navigator.push('/login');
         } else if (response.status === 403) {
             console.log('暂无权限');
         } else if (response.status === 404) {
