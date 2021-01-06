@@ -10,7 +10,7 @@
     </div>
     <div class="cus-table-header">
       <div class="statistic">
-        <template v-if="statistic">
+        <template v-if="statistic" v-acl="'order-statistics'">
           <span>总金额：{{ statistic.amount_count }}</span>
           <span>已回收金额：{{ statistic.received_amount_count }}</span>
           <span>本月总金额：{{ statistic.month_amount_count }}</span>
@@ -45,15 +45,11 @@
         <p>旺旺名：{{ data.want_name }}</p>
       </template>
       <template slot="money" slot-scope="data">
-        <p>订单总额：{{ data.amount }}</p>
-        <p>已收金额：{{ data.received_amount }}</p>
-        <p>
-          未收尾款：{{
-            data.amount - data.received_amount > 0
-              ? data.amount - data.received_amount
-              : "已结清"
-          }}
-        </p>
+        {{
+          data.amount - data.received_amount > 0
+            ? data.amount - data.received_amount
+            : "已结清"
+        }}
       </template>
       <template slot="image" slot-scope="data">
         <img
@@ -77,15 +73,15 @@
       </template>
       <template slot="operate" slot-scope="data">
         <div class="cus-nowrap">
-          <template>
+          <template v-acl="'order-upadte'">
             <a-icon type="edit" title="编辑" @click="toEdit(data)" />
             <a-divider type="vertical"></a-divider>
           </template>
-          <template>
+          <template v-acl="'order-edit.name'">
             <a-icon type="api" title="分配编辑" @click="toAllot(data.id)" />
             <a-divider type="vertical"></a-divider>
           </template>
-          <template>
+          <template v-acl="'order-manuscript'">
             <a-icon type="upload" title="上传稿件" @click="toUpload(data.id)" />
             <a-divider type="vertical"></a-divider>
           </template>
@@ -93,7 +89,7 @@
             <a-icon type="eye" title="详情" @click="toDetail(data.id)" />
             <a-divider type="vertical"></a-divider>
           </template> -->
-          <template>
+          <template v-acl="'order-status'">
             <a-icon type="swap" title="修改状态" @click="toStatus(data)" />
           </template>
         </div>
@@ -209,7 +205,25 @@ const columns = [
     scopedSlots: { customRender: "user" },
   },
   {
-    title: "金额",
+    title: "创建时间",
+    dataIndex: "created_at",
+  },
+  {
+    title: "截止时间",
+    dataIndex: "submission_time",
+  },
+  {
+    title: "订单总额",
+    hidden: "edit",
+    dataIndex: "amount",
+  },
+  {
+    title: "已收金额",
+    hidden: "edit",
+    dataIndex: "received_amount",
+  },
+  {
+    title: "未收尾款",
     hidden: "edit",
     scopedSlots: { customRender: "money" },
   },
@@ -236,14 +250,6 @@ const columns = [
   {
     title: "责任编辑",
     dataIndex: "edit_name",
-  },
-  {
-    title: "截止时间",
-    dataIndex: "submission_time",
-  },
-  {
-    title: "创建时间",
-    dataIndex: "created_at",
   },
   {
     title: "备注",
@@ -297,7 +303,6 @@ export default {
     };
   },
   created() {
-    this.getStatistic();
     PublicApi.roleUserList("staff").then((res) => {
       let temp = this.condition.find((_) => _.key == "staff_name");
       if (temp) {
@@ -372,6 +377,7 @@ export default {
       this.uploadVisible = true;
     },
     _getList() {
+      this.getStatistic();
       this.collection.loading = true;
       OrderApi.list(
         Object.assign(
