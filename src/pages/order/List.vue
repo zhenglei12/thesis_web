@@ -379,6 +379,8 @@ export default {
           {
             page: this.collection.page,
             pageSize: this.collection.pageSize,
+            staff_name: this.isService ? this.$auth.user().name : undefined,
+            edit_name: this.isEditor ? this.$auth.user().name : undefined,
           },
           this.search
         )
