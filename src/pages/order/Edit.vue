@@ -36,7 +36,7 @@
             <a-input-number
               v-model="form.amount"
               :min="0"
-              :disabled="isService"
+              :disabled="isService && isEdit"
             />
           </a-form-model-item>
         </a-col>
@@ -45,7 +45,7 @@
             <a-input-number
               v-model="form.received_amount"
               :min="0"
-              :disabled="isService"
+              :disabled="isService && isEdit"
             />
           </a-form-model-item>
         </a-col>
@@ -121,7 +121,7 @@
             <a-date-picker
               v-model="form.submission_time"
               valueFormat="YYYY-MM-DD"
-              :disabled="isService"
+              :disabled="isService && isEdit"
             />
           </a-form-model-item>
         </a-col>
