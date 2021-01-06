@@ -135,12 +135,20 @@
 <script>
 const condition = [
   {
+    key: "id",
+    placeholder: "ID",
+  },
+  {
     key: "subject",
     placeholder: "题目",
   },
   {
     key: "word_number",
     placeholder: "字数",
+  },
+  {
+    key: "name",
+    placeholder: "客户姓名",
   },
   {
     key: "task_type",
@@ -183,6 +191,10 @@ const condition = [
 ];
 
 const columns = [
+  {
+    title: "ID",
+    dataIndex: "id",
+  },
   {
     title: "任务类型",
     dataIndex: "task_type",

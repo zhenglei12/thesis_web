@@ -30,6 +30,19 @@
           </a-select-option>
         </a-select>
       </a-form-model-item>
+      <a-form-model-item label="文件上传" v-if="form.status == 2" required>
+        <a-upload
+          :fileList="fileList"
+          :customRequest="cusUpload"
+          :remove="
+            () => {
+              fileList = [];
+            }
+          "
+        >
+          <a-button>上传</a-button>
+        </a-upload>
+      </a-form-model-item>
     </a-form-model>
   </a-modal>
 </template>
@@ -39,6 +52,7 @@ import editMixin from "../../mixins/edit";
 import OrderApi from "../../apis/order";
 import Utils from "../../libs/utils";
 import { orderStatusMap } from "./mapping";
+import upload from "../../libs/upload";
 
 export default {
   mixins: [editMixin],
@@ -47,6 +61,7 @@ export default {
       loading: false,
       statusList: Utils.mapToArray(orderStatusMap),
       form: {},
+      fileList: [],
     };
   },
   watch: {
@@ -62,13 +77,20 @@ export default {
   methods: {
     submit() {
       this.loading = true;
-      OrderApi.status({ ...this.form })
-        .then((res) => {
-          this.$message.success("保存成功");
-          this.$emit("refresh", res);
-          this.close();
+      upload
+        .uploadList(this.fileList, ["cherishlin"])
+        .then(() => {
+          this.form.manuscript = upload.getRources(this.fileList)[0];
+          return OrderApi.status({ ...this.form }).then((res) => {
+            this.$message.success("保存成功");
+            this.$emit("refresh", res);
+            this.close();
+          });
         })
         .finally(() => (this.loading = false));
+    },
+    cusUpload({ file }) {
+      this.fileList = [file];
     },
   },
 };
