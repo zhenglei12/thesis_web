@@ -43,6 +43,12 @@
           <a-button>上传</a-button>
         </a-upload>
       </a-form-model-item>
+      <a-form-model-item label="交稿时间" v-if="form.status == 2" required>
+        <a-date-picker
+          v-model="form.submission_time"
+          valueFormat="YYYY-MM-DD"
+        />
+      </a-form-model-item>
     </a-form-model>
   </a-modal>
 </template>
