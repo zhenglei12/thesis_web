@@ -208,7 +208,6 @@ export default {
   created() {
     let user = this.$auth.user();
     this.isService = !!user.roles.find((_) => _.alias == "staff");
-    console.log(this.isService);
   },
   watch: {
     visible(e) {
