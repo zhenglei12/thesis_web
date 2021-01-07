@@ -5,6 +5,9 @@ export default {
     statistic: () => http.post('api/order/statistics', null, {
         acl: 'order-statistics'
     }),
+    numbers: () => http.post('api/order/count_num', null, {
+        acl: 'order-count.num'
+    }),
     create: (data) => http.post('api/order/add', data),
     update: (data) => http.post('api/order/update', data),
     allot: (data) => http.post('api/order/edit_name', data),

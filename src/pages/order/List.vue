@@ -16,6 +16,9 @@
           <span>本月总金额：{{ statistic.month_amount_count }}</span>
           <span>已回收金额：{{ statistic.month_received_amount_count }}</span>
         </span>
+        <span v-if="numbers" v-acl="'order-count.num'"
+          >文字统计：{{ numbers }}</span
+        >
       </div>
       <a-button v-acl="'order-add'" type="primary" @click="toEdit()"
         >新增</a-button
@@ -305,6 +308,7 @@ export default {
       isService: false,
       isEditor: false,
       statistic: null,
+      numbers: null,
       editVisible: false,
       statusVisible: false,
       allotVisible: false,
@@ -343,6 +347,9 @@ export default {
     getStatistic() {
       OrderApi.statistic().then((res) => {
         this.statistic = res;
+      });
+      OrderApi.numbers().then((res) => {
+        this.numbers = res.count_num;
       });
     },
     getRowClass(data) {

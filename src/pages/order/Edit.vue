@@ -121,7 +121,6 @@
             <a-date-picker
               v-model="form.submission_time"
               valueFormat="YYYY-MM-DD"
-              :disabled="isService && isEdit"
             />
           </a-form-model-item>
         </a-col>
