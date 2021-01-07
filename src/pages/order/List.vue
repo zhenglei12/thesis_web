@@ -10,12 +10,12 @@
     </div>
     <div class="cus-table-header">
       <div class="statistic">
-        <template v-if="statistic" v-acl="'order-statistics'">
+        <span v-if="statistic" v-acl="'order-statistics'">
           <span>总金额：{{ statistic.amount_count }}</span>
           <span>已回收金额：{{ statistic.received_amount_count }}</span>
           <span>本月总金额：{{ statistic.month_amount_count }}</span>
           <span>已回收金额：{{ statistic.month_received_amount_count }}</span>
-        </template>
+        </span>
       </div>
       <a-button v-acl="'order-add'" type="primary" @click="toEdit()"
         >新增</a-button
@@ -73,25 +73,25 @@
       </template>
       <template slot="operate" slot-scope="data">
         <div class="cus-nowrap">
-          <template v-acl="'order-upadte'">
+          <span v-acl="'order-upadte'">
             <a-icon type="edit" title="编辑" @click="toEdit(data)" />
             <a-divider type="vertical"></a-divider>
-          </template>
-          <template v-acl="'order-edit.name'">
+          </span>
+          <span v-acl="'order-edit.name'">
             <a-icon type="api" title="分配编辑" @click="toAllot(data.id)" />
             <a-divider type="vertical"></a-divider>
-          </template>
-          <template v-acl="'order-manuscript'">
+          </span>
+          <span v-acl="'order-manuscript'">
             <a-icon type="upload" title="上传稿件" @click="toUpload(data.id)" />
             <a-divider type="vertical"></a-divider>
-          </template>
+          </span>
           <!-- <template>
             <a-icon type="eye" title="详情" @click="toDetail(data.id)" />
             <a-divider type="vertical"></a-divider>
           </template> -->
-          <template v-acl="'order-status'">
+          <span v-acl="'order-status'">
             <a-icon type="swap" title="修改状态" @click="toStatus(data)" />
-          </template>
+          </span>
         </div>
       </template>
     </a-table>
