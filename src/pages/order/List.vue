@@ -73,7 +73,7 @@
       </template>
       <template slot="operate" slot-scope="data">
         <div class="cus-nowrap">
-          <span v-acl="'order-upadte'">
+          <span v-acl="'order-update'">
             <a-icon type="edit" title="编辑" @click="toEdit(data)" />
             <a-divider type="vertical"></a-divider>
           </span>
