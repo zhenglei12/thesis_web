@@ -269,8 +269,8 @@ export default {
     submit() {
       this.loading = true;
       Promise.all([
-        upload.uploadList(this.askList, ["cherishlin"]),
-        upload.uploadList(this.imgList, ["cherishlin"]),
+        upload.uploadList(this.askList, ["lywang"]),
+        upload.uploadList(this.imgList, ["lywang"]),
       ])
         .then(() => {
           this.form.detail_re = upload.getRources(this.askList)[0];

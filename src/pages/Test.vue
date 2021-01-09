@@ -42,7 +42,7 @@ export default {
     request(e) {
       this.fileList = [e.file];
       console.log(e);
-      upload.uploadFile(e.file, ["cherishlin"]).then((res) => {
+      upload.uploadFile(e.file, ["lywang"]).then((res) => {
         console.log(res);
       });
     },

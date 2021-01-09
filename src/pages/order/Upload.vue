@@ -52,7 +52,7 @@ export default {
     },
     submit() {
       this.loading = true;
-      upload.uploadList(this.fileList, ["cherishlin"]).then(() => {
+      upload.uploadList(this.fileList, ["lywang"]).then(() => {
         OrderApi.upload({
           id: this.R,
           manuscript: upload.getRources(this.fileList)[0],

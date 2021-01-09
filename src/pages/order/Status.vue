@@ -84,7 +84,7 @@ export default {
     submit() {
       this.loading = true;
       upload
-        .uploadList(this.fileList, ["cherishlin"])
+        .uploadList(this.fileList, ["lywang"])
         .then(() => {
           this.form.manuscript = upload.getRources(this.fileList)[0];
           return OrderApi.status({ ...this.form }).then((res) => {
