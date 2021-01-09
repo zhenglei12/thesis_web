@@ -57,9 +57,9 @@ class UploadManage {
                     resolve(file.url)
                 })
                 .catch(err => {
+                    delete this.tokens[disk];
                     if (err.status === 401 && !this.authFail) {
                         this.authFail = true;
-                        delete this.tokens[disk];
                         this.uploadFile(file, space).then(res => resolve(res)).catch(err => reject(err));
                     } else {
                         reject(err);
