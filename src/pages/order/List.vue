@@ -229,22 +229,22 @@ const columns = [
   },
   {
     title: "订单总额",
-    hidden: "edit",
+    hidden: ["edit", "edit_admin"],
     dataIndex: "amount",
   },
   {
     title: "已收金额",
-    hidden: "edit",
+    hidden: ["edit", "edit_admin"],
     dataIndex: "received_amount",
   },
   {
     title: "未收尾款",
-    hidden: "edit",
+    hidden: ["edit", "edit_admin"],
     scopedSlots: { customRender: "money" },
   },
   {
     title: "付款截图",
-    hidden: "edit",
+    hidden: ["edit", "edit_admin"],
     dataIndex: "pay_img",
     scopedSlots: { customRender: "image" },
   },
@@ -335,13 +335,28 @@ export default {
     let user = this.$auth.user();
     this.isService = !!user.roles.find((_) => _.alias == "staff");
     this.isEditor = !!user.roles.find((_) => _.alias == "edit");
+    this.isEditAdmain = !!user.roles.find((_) => _.alias == "edit_admin");
     if (this.isService) {
       this.condition = this.condition.filter((_) => _.key != "staff_name");
     }
     if (this.isEditor) {
       this.condition = this.condition.filter((_) => _.key != "edit_name");
-      this.columns = this.columns.filter((_) => _.hidden != "edit");
+      this.columns = this.columns.filter((_) => {
+        if (_.hidden) {
+          return !~_.hidden.indexOf("edit");
+        }
+        return true;
+      });
     }
+    if (this.isEditAdmain) {
+      this.columns = this.columns.filter((_) => {
+        if (_.hidden) {
+          return !~_.hidden.indexOf("edit_admin");
+        }
+        return true;
+      });
+    }
+    console.log(this.columns);
   },
   methods: {
     getStatistic() {
