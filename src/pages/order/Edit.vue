@@ -42,11 +42,7 @@
         </a-col>
         <a-col span="12">
           <a-form-model-item label="已收金额">
-            <a-input-number
-              v-model="form.received_amount"
-              :min="0"
-              :disabled="isService && isEdit"
-            />
+            <a-input-number v-model="form.received_amount" :min="0" />
           </a-form-model-item>
         </a-col>
       </a-row>
