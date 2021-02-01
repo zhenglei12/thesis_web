@@ -211,7 +211,7 @@ export default {
           id: this.R.id,
           subject: this.R.subject,
           word_number: this.R.word_number,
-          task_type: this.R.task_type,
+          task_type: this.R.task_type.toString(),
           task_ask: this.R.task_ask,
           submission_time: this.R.submission_time,
           name: this.R.name,
