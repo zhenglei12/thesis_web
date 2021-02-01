@@ -88,10 +88,12 @@
             <a-icon type="upload" title="上传稿件" @click="toUpload(data.id)" />
             <a-divider type="vertical"></a-divider>
           </span>
-          <!-- <template>
-            <a-icon type="eye" title="详情" @click="toDetail(data.id)" />
+          <span v-acl="'order-delete'">
+            <a-popconfirm title="确认删除？" @confirm="toDelete(data.id)">
+              <a-icon type="delete" title="删除" />
+            </a-popconfirm>
             <a-divider type="vertical"></a-divider>
-          </template> -->
+          </span>
           <span v-acl="'order-status'">
             <a-icon type="swap" title="修改状态" @click="toStatus(data)" />
           </span>
@@ -409,6 +411,12 @@ export default {
     toUpload(e) {
       this.temp = e;
       this.uploadVisible = true;
+    },
+    toDelete(e) {
+      OrderApi.remove(e).then(() => {
+        this.$message.success("操作成功");
+        this._getList();
+      });
     },
     _getList() {
       this.getStatistic();

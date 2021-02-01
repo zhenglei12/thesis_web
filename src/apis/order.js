@@ -13,4 +13,7 @@ export default {
     allot: (data) => http.post('api/order/edit_name', data),
     status: (data) => http.post('api/order/status', data),
     upload: (data) => http.post('api/order/manuscript', data),
+    remove: (id) => http.post('api/order/delete', {
+        id
+    }),
 }
