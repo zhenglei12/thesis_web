@@ -24,9 +24,9 @@
             >角色列表</a-menu-item
           >
         </a-sub-menu>
-        <a-sub-menu key="task">
+        <a-sub-menu key="task" v-acl="'order-list'">
           <span slot="title"><a-icon type="user" /><span>任务管理</span></span>
-          <a-menu-item key="order" @click="goto('/order')"
+          <a-menu-item v-acl="'order-list'" key="order" @click="goto('/order')"
             >订单列表</a-menu-item
           >
         </a-sub-menu>
