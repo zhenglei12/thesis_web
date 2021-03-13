@@ -88,7 +88,7 @@
             <a-icon type="upload" title="上传稿件" @click="toUpload(data.id)" />
             <a-divider type="vertical"></a-divider>
           </span>
-          <span>
+          <span v-acl="'order-logs'">
             <a-icon type="file" title="日志" @click="toLog(data.id)" />
             <a-divider type="vertical"></a-divider>
           </span>
