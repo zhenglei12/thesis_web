@@ -44,7 +44,7 @@
       </template>
       <template slot="user" slot-scope="data">
         <p>名称：{{ data.name }}</p>
-        <p>电话：{{ data.phone }}</p>
+        <!-- <p>电话：{{ data.phone }}</p> -->
         <p>旺旺名：{{ data.want_name }}</p>
       </template>
       <template slot="money" slot-scope="data">
@@ -220,6 +220,11 @@ const columns = [
   {
     title: "客户",
     scopedSlots: { customRender: "user" },
+  },
+  {
+    title: "客户电话",
+    hidden: ["edit", "edit_admin"],
+    dataIndex: "phone",
   },
   {
     title: "创建时间",
