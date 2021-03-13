@@ -16,4 +16,5 @@ export default {
     remove: (id) => http.post('api/order/delete', {
         id
     }),
+    logs: (data) => http.post('api/order/logs', data),
 }

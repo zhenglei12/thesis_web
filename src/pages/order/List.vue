@@ -88,6 +88,10 @@
             <a-icon type="upload" title="上传稿件" @click="toUpload(data.id)" />
             <a-divider type="vertical"></a-divider>
           </span>
+          <span>
+            <a-icon type="file" title="日志" @click="toLog(data.id)" />
+            <a-divider type="vertical"></a-divider>
+          </span>
           <span v-acl="'order-delete'">
             <a-popconfirm title="确认删除？" @confirm="toDelete(data.id)">
               <a-icon type="delete" title="删除" />
@@ -134,6 +138,8 @@
 
     <!-- 图片预览 -->
     <img-preview v-model="previewVisible" :urls="previewUrl"></img-preview>
+
+    <cus-log v-model="logVisible" :data="temp"></cus-log>
   </div>
 </template>
 
@@ -296,6 +302,7 @@ import CusEdit from "./Edit";
 import CusStatus from "./Status";
 import CusAllot from "./Allot";
 import CusUpload from "./Upload";
+import CusLog from "./Log";
 import { taskTypeMap, orderStatusMap } from "./mapping";
 
 export default {
@@ -304,6 +311,7 @@ export default {
     CusAllot,
     CusStatus,
     CusUpload,
+    CusLog,
   },
   mixins: [listMixin],
   data() {
@@ -321,6 +329,7 @@ export default {
       allotVisible: false,
       previewVisible: false,
       uploadVisible: false,
+      logVisible: false,
       previewUrl: "",
       editorList: [],
     };
@@ -422,6 +431,10 @@ export default {
         this.$message.success("操作成功");
         this._getList();
       });
+    },
+    toLog(e) {
+      this.temp = e;
+      this.logVisible = true;
     },
     _getList() {
       this.getStatistic();
