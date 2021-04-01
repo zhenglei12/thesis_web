@@ -390,6 +390,7 @@ export default {
         case "2":
           return "bg-pink";
         case "3":
+          return "bg-purple";
         case "5":
           return "bg-blue";
         case "4":
@@ -495,6 +496,10 @@ export default {
 
   &-blue {
     background-color: #a3ccfa;
+  }
+
+  &-purple {
+    background-color: #c08dc0;
   }
 }
 
