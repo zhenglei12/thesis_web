@@ -71,11 +71,11 @@
         </a-col>
       </a-row>
       <a-row>
-        <a-col span="12">
+        <!-- <a-col span="12">
           <a-form-model-item label="客户电话">
             <a-input v-model="form.phone" allow-clear />
           </a-form-model-item>
-        </a-col>
+        </a-col> -->
         <a-col span="12">
           <a-form-model-item label="旺旺名">
             <a-input v-model="form.want_name" allow-clear />
@@ -162,6 +162,21 @@
         <!-- 图片预览 -->
         <img-preview v-model="previewVisible" :urls="previewUrl"></img-preview>
       </a-form-model-item>
+      <a-row>
+        <a-col span="12">
+          <a-form-model-item label="收款时间">
+            <a-date-picker
+              v-model="form.receipt_time"
+              valueFormat="YYYY-MM-DD"
+            />
+          </a-form-model-item>
+        </a-col>
+        <a-col span="12">
+          <a-form-model-item label="收款账户">
+            <a-input v-model="form.receipt_account" allow-clear />
+          </a-form-model-item>
+        </a-col>
+      </a-row>
       <a-form-model-item
         :label-col="{ span: 3 }"
         :wrapper-col="{ span: 20 }"
@@ -211,16 +226,18 @@ export default {
           id: this.R.id,
           subject: this.R.subject,
           word_number: this.R.word_number,
-          task_type: this.R.task_type.toString(),
+          task_type: this.R.task_type && this.R.task_type.toString(),
           task_ask: this.R.task_ask,
           submission_time: this.R.submission_time,
           name: this.R.name,
-          phone: this.R.phone,
+          // phone: this.R.phone,
           want_name: this.R.want_name,
           amount: this.R.amount,
           received_amount: this.R.received_amount,
           pay_type: this.R.pay_type,
           remark: this.R.remark,
+          receipt_time: this.R.receipt_time,
+          receipt_account: this.R.receipt_account,
         };
         this.askList = this.R.detail_re
           ? [

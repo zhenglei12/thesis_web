@@ -24,10 +24,58 @@
             >角色列表</a-menu-item
           >
         </a-sub-menu>
-        <a-sub-menu key="task" v-acl="'order-list'">
-          <span slot="title"><a-icon type="user" /><span>任务管理</span></span>
-          <a-menu-item v-acl="'order-list'" key="order" @click="goto('/order')"
-            >订单列表</a-menu-item
+        <a-menu-item
+          v-acl="'order-list'"
+          key="task-order"
+          @click="goto('/order')"
+        >
+          <a-icon type="dollar" />
+          <span>订单列表</span>
+        </a-menu-item>
+        <a-menu-item
+          v-acl="'classify-list'"
+          key="classify"
+          @click="goto('/classify')"
+        >
+          <a-icon type="hdd" />
+          <span>文档库</span>
+        </a-menu-item>
+        <a-sub-menu
+          v-acl:one="[
+            'edit-statistics.all.list',
+            'edit-statistics.day.list',
+            'staff-statistics.list',
+            'edit-statistics.order.list',
+          ]"
+          key="statistic"
+        >
+          <span slot="title">
+            <a-icon type="area-chart" />
+            <span>报表管理</span>
+          </span>
+          <a-menu-item
+            v-acl="'edit-statistics.all.list'"
+            key="statistic-all"
+            @click="goto('/statistic/all')"
+            >总览</a-menu-item
+          >
+          <a-menu-item
+            v-acl="'edit-statistics.day.list'"
+            key="statistic-day"
+            @click="goto('/statistic/day')"
+            >日统计</a-menu-item
+          >
+          <a-menu-item
+            v-acl="'staff-statistics.list'"
+            key="statistic-user"
+            @click="goto('/statistic/user')"
+            >员工统计</a-menu-item
+          >
+          <a-menu-item
+            v-acl="'edit-statistics.order.list'"
+            key="statistic-order"
+            @click="goto('/editorder')"
+            >编辑订单列表</a-menu-item
           >
         </a-sub-menu>
       </a-menu>
@@ -59,8 +107,14 @@ export default {
     };
   },
   mounted() {
-    let key = this.$route.meta.group || this.$route.name.split("/")[0];
-    this.openKey = [key];
+    if (this.$route.name) {
+      const temp = this.$route.name.split("-");
+      temp.reduce((arr, _) => {
+        arr.push(_);
+        this.openKey.push(arr.join("-"));
+        return arr;
+      }, []);
+    }
   },
   methods: {
     goto(path) {
