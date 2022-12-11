@@ -19,6 +19,8 @@
         :placeholder="item.placeholder || item.label || '请选择'"
         @change="delaySubmit"
         allowClear
+        :showSearch="item.showSearch || false"
+        optionFilterProp="children"
       >
         <a-select-option
           v-for="(o, i) in item.options"
@@ -28,6 +30,16 @@
           {{ o[item.labelKey || "label"] }}
         </a-select-option>
       </a-select>
+      <a-range-picker
+        v-else-if="item.type === 'date-in'"
+        v-model="form[item.key]"
+        :placeholder="[
+          (item.placeholder && item.placeholder[0]) || item.label || '开始日期',
+          (item.placeholder && item.placeholder[1]) || item.label || '结束日期',
+        ]"
+        :valueFormat="item.showTime ? 'YYYY-MM-DD hh:mm:ss' : 'YYYY-MM-DD'"
+        @change="delaySubmit"
+      />
       <a-input
         v-else
         v-model="form[item.key]"

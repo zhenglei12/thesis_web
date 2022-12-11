@@ -1,4 +1,3 @@
-
 <template>
   <div>
     <div class="cus-table-header">
@@ -20,9 +19,12 @@
           >文字统计：{{ numbers }}</span
         >
       </div>
-      <a-button v-acl="'order-add'" type="primary" @click="toEdit()"
-        >新增</a-button
-      >
+      <a-button-group>
+        <a-button v-acl="'order-export'" @click="toExport()">导出</a-button>
+        <a-button v-acl="'order-add'" type="primary" @click="toEdit()"
+          >新增</a-button
+        >
+      </a-button-group>
     </div>
     <a-table
       :columns="columns"
@@ -92,7 +94,7 @@
             <a-icon type="file" title="日志" @click="toLog(data.id)" />
             <a-divider type="vertical"></a-divider>
           </span>
-          <span v-acl="'order-delete'">
+          <span v-acl="'order-delete'" class="cus-pointer">
             <a-popconfirm title="确认删除？" @confirm="toDelete(data.id)">
               <a-icon type="delete" title="删除" />
             </a-popconfirm>
@@ -126,6 +128,7 @@
     <cus-upload
       v-model="uploadVisible"
       :data="temp"
+      :classifyList="classifyList"
       @refresh="_getList"
     ></cus-upload>
 
@@ -184,6 +187,15 @@ const condition = [
     valueKey: "name",
   },
   {
+    key: "classify_id",
+    type: "select",
+    placeholder: "文档分类",
+    showSearch: true,
+    options: [],
+    labelKey: "name",
+    valueKey: "id",
+  },
+  {
     key: "status",
     type: "select",
     options: Utils.mapToArray(orderStatusMap),
@@ -227,11 +239,11 @@ const columns = [
     title: "客户",
     scopedSlots: { customRender: "user" },
   },
-  {
-    title: "客户电话",
-    hidden: ["edit", "edit_admin"],
-    dataIndex: "phone",
-  },
+  // {
+  //   title: "客户电话",
+  //   hidden: ["edit", "edit_admin"],
+  //   dataIndex: "phone",
+  // },
   {
     title: "创建时间",
     dataIndex: "created_at",
@@ -262,6 +274,14 @@ const columns = [
     scopedSlots: { customRender: "image" },
   },
   {
+    title: "收款时间",
+    dataIndex: "receipt_time",
+  },
+  {
+    title: "收款账户",
+    dataIndex: "receipt_account",
+  },
+  {
     title: "详细要求",
     dataIndex: "detail_re",
     scopedSlots: { customRender: "ask" },
@@ -274,6 +294,10 @@ const columns = [
   {
     title: "创建客服",
     dataIndex: "staff_name",
+  },
+  {
+    title: "文档分类",
+    dataIndex: "classify.name",
   },
   {
     title: "责任编辑",
@@ -332,6 +356,7 @@ export default {
       logVisible: false,
       previewUrl: "",
       editorList: [],
+      classifyList: [],
     };
   },
   created() {
@@ -344,6 +369,16 @@ export default {
     PublicApi.roleUserList("edit").then((res) => {
       let temp = this.condition.find((_) => _.key == "edit_name");
       this.editorList = res.list;
+      if (temp) {
+        temp.options = res.list;
+      }
+    });
+    PublicApi.documentClassify({
+      page: 1,
+      pageSize: 200,
+    }).then((res) => {
+      let temp = this.condition.find((_) => _.key == "classify_id");
+      this.classifyList = res.list;
       if (temp) {
         temp.options = res.list;
       }
@@ -372,7 +407,6 @@ export default {
         return true;
       });
     }
-    console.log(this.columns);
   },
   methods: {
     getStatistic() {
@@ -457,6 +491,45 @@ export default {
         this.collection.loading = false;
       });
     },
+    toExport() {
+      let _search = { ...this.search };
+      if (_search._date) {
+        _search.created_at = _search._date[0];
+        _search.end_time = _search._date[1];
+      }
+      OrderApi.export(
+        Object.assign(
+          {},
+          {
+            page: this.collection.page,
+            pageSize: this.collection.pageSize,
+            staff_name: this.isService ? this.$auth.user().name : undefined,
+            edit_name: this.isEditor ? this.$auth.user().name : undefined,
+          },
+          _search
+        )
+      ).then((res) => {
+        if (res.type === "application/json") {
+          try {
+            const render = new FileReader();
+            render.readAsText(res);
+            render.onload = (e) => {
+              const json = JSON.parse(e.target.result);
+              this.$notification.error({
+                message: "业务错误",
+                description: json.message,
+              });
+            };
+          } catch {
+            // eslint-disable-next-line
+          }
+          return;
+        }
+        Utils.export(res, "订单列表").then(() => {
+          this.$message.success("下载完成");
+        });
+      });
+    },
   },
 };
 </script>
@@ -467,7 +540,7 @@ export default {
   color: red;
 
   span {
-    margin-left: 50px;
+    margin-left: 20px;
 
     &:first-of-type {
       margin: 0;
