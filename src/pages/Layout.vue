@@ -78,6 +78,14 @@
             >编辑订单列表</a-menu-item
           >
         </a-sub-menu>
+        <a-menu-item
+          v-acl="'manuscript_bank-list'"
+          key="manuscript"
+          @click="goto('/manuscript')"
+        >
+          <a-icon type="book" />
+          <span>稿件库</span>
+        </a-menu-item>
       </a-menu>
     </a-layout-sider>
     <a-layout>

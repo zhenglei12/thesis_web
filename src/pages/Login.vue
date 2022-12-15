@@ -1,6 +1,6 @@
 <template>
   <div class="wraper">
-    <div class="login-card">
+    <div class="login-card" @keydown.enter="login">
       <a-form-model ref="form" class="login-form" :model="form" :rules="rules">
         <a-form-model-item prop="username">
           <a-input v-model="form.username" placeholder="用户名" allow-clear>

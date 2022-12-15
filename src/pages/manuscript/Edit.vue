@@ -13,6 +13,12 @@
       :label-col="{ span: 4 }"
       :wrapper-col="{ span: 19 }"
     >
+      <a-form-model-item label="题目" required>
+        <a-input v-model="form.subject" allow-clear />
+      </a-form-model-item>
+      <a-form-model-item label="字数" required>
+        <a-input-number v-model="form.word_number" :min="0" :precision="0" />
+      </a-form-model-item>
       <a-form-model-item label="内容类型" required>
         <a-cascader
           :default-value="form.classify_id"
@@ -25,9 +31,6 @@
             children: 'children',
           }"
         />
-      </a-form-model-item>
-      <a-form-model-item label="字数" required>
-        <a-input-number v-model="form.alter_word" :min="0" :precision="0" />
       </a-form-model-item>
       <a-upload-dragger
         :fileList="fileList"
@@ -45,8 +48,9 @@
 
 <script>
 import editMixin from "../../mixins/edit";
-import OrderApi from "../../apis/order";
+import ManuscriptApi from "../../apis/manuscript";
 import upload from "../../libs/upload";
+import utils from "../../libs/utils";
 
 export default {
   mixins: [editMixin],
@@ -67,8 +71,21 @@ export default {
   watch: {
     visible() {
       this.form = {
-        id: this.R,
+        id: this.R.id,
+        subject: this.R.subject,
+        word_number: this.R.word_number,
+        classify_id: this.R.classify_id,
       };
+      this.fileList = this.R.manuscript
+        ? [
+            {
+              uid: utils.uuid(),
+              status: "done",
+              name: this.R.manuscript.split("/").pop(),
+              url: this.R.manuscript,
+            },
+          ]
+        : [];
     },
   },
   methods: {
@@ -89,16 +106,25 @@ export default {
     },
     submit() {
       this.loading = true;
-      upload.uploadList(this.fileList, ["lywang"]).then(() => {
-        this.form.manuscript = upload.getRources(this.fileList)[0];
-        OrderApi.upload({ ...this.form })
-          .then((res) => {
-            this.$message.success("保存成功");
-            this.$emit("refresh", res);
-            this.close();
-          })
-          .finally(() => (this.loading = false));
-      });
+      upload
+        .uploadList(this.fileList, ["lywang"])
+        .then(() => {
+          this.form.manuscript = upload.getRources(this.fileList)[0];
+          if (this.isEdit) {
+            return ManuscriptApi.update({ ...this.form }).then((res) => {
+              this.$message.success("保存成功");
+              this.$emit("refresh", res);
+              this.close();
+            });
+          } else {
+            return ManuscriptApi.create({ ...this.form }).then((res) => {
+              this.$message.success("保存成功");
+              this.$emit("refresh", res);
+              this.close();
+            });
+          }
+        })
+        .finally(() => (this.loading = false));
     },
   },
 };

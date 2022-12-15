@@ -1,57 +1,62 @@
 <template>
   <div>
-    <a-upload
-      :fileList="fileList"
-      :beforeUpload="beforeUpload"
-      :customRequest="request"
-      :remove="remove"
-    >
-      <a-button>上传</a-button>
-    </a-upload>
+    <a-cascader
+      v-model="value"
+      :options="options"
+      :load-data="loadData"
+      :popupVisible="popupVisible"
+      placeholder="Please select"
+    />
   </div>
 </template>
 
 <script>
-import upload from "../libs/upload";
-
 export default {
   data() {
     return {
-      fileList: [],
-      fileType: ["png"],
+      value: null,
+      popupVisible: false,
+      options: [
+        {
+          value: "zhejiang",
+          label: "Zhejiang",
+          isLeaf: false,
+        },
+        {
+          value: "jiangsu",
+          label: "Jiangsu",
+          isLeaf: false,
+        },
+      ],
     };
   },
   methods: {
-    test() {
-      upload.uploadFile().then((res) => {
-        console.log(res);
-      });
-    },
-    beforeUpload(e) {
-      let type = e.name.substring(e.name.lastIndexOf(".") + 1);
-      if (!~this.fileType.indexOf(type.toLowerCase())) {
-        this.$message.error(`文件${e.name}上传失败,不支持该文件类型!`);
-        e.status = "unqualified";
-        return false;
-      }
-      return true;
-    },
-    remove() {
-      this.fileList = [];
-    },
-    request(e) {
-      this.fileList = [e.file];
-      console.log(e);
-      upload.uploadFile(e.file, ["lywang"]).then((res) => {
-        console.log(res);
-      });
+    loadData(selectedOptions) {
+      console.log(this.value);
+      const targetOption = selectedOptions[selectedOptions.length - 1];
+      targetOption.loading = true;
+      setTimeout(() => {
+        targetOption.loading = false;
+        if (selectedOptions.length == 2) {
+          targetOption.isLeaf = true;
+          this.value = selectedOptions.map((_) => _.value);
+          return;
+        }
+        targetOption.children = [
+          {
+            label: `${targetOption.label} Dynamic 1`,
+            value: "dynamic1",
+            isLeaf: false,
+          },
+          {
+            label: `${targetOption.label} Dynamic 2`,
+            value: "dynamic2",
+            isLeaf: false,
+          },
+        ];
+        this.options = [...this.options];
+      }, 1000);
     },
   },
 };
 </script>
-
-<style lang="less" scoped>
-/deep/ .ant-upload-list-text {
-  width: 200px;
-}
-</style>

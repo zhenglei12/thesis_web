@@ -40,6 +40,19 @@
         :valueFormat="item.showTime ? 'YYYY-MM-DD hh:mm:ss' : 'YYYY-MM-DD'"
         @change="delaySubmit"
       />
+      <a-cascader
+        v-else-if="item.type === 'cascader'"
+        v-model="form[item.key]"
+        :options="item.options"
+        :placeholder="item.placeholder || item.label || '请选择'"
+        :change-on-select="item.changeOnSelect"
+        :fieldNames="{
+          label: item.labelKey || 'label',
+          value: item.valueKey || 'value',
+          children: item.childrenKey || 'children',
+        }"
+        @change="delaySubmit"
+      />
       <a-input
         v-else
         v-model="form[item.key]"
