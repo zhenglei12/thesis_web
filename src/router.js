@@ -76,6 +76,11 @@ const routes = [
         component: () => import("./pages/statistic/Order"),
       },
       {
+        path: "manuscript",
+        name: "manuscript",
+        component: () => import("./pages/manuscript/List.vue"),
+      },
+      {
         path: "test",
         name: "test",
         component: () => import("./pages/Test"),

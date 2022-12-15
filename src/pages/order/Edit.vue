@@ -101,7 +101,7 @@
       >
         <a-upload
           :fileList="askList"
-          :customRequest="cusAskUpload"
+          :customRequest="(e) => cusImgUpload('askList', e)"
           :remove="
             () => {
               askList = [];
@@ -138,45 +138,60 @@
           </a-form-model-item>
         </a-col>
       </a-row>
-      <a-form-model-item
-        :label-col="{ span: 3 }"
-        :wrapper-col="{ span: 20 }"
-        label="付款截图"
-      >
-        <a-upload
-          list-type="picture-card"
-          :file-list="imgList"
-          :customRequest="cusImgUpload"
-          :remove="
-            () => {
-              imgList = [];
-            }
-          "
-          @preview="toPreview"
-        >
-          <div v-if="!imgList.length">
-            <a-icon type="plus" />
-            <div class="ant-upload-text">上传</div>
-          </div>
-        </a-upload>
-        <!-- 图片预览 -->
-        <img-preview v-model="previewVisible" :urls="previewUrl"></img-preview>
-      </a-form-model-item>
       <a-row>
         <a-col span="12">
-          <a-form-model-item label="收款时间">
-            <a-date-picker
-              v-model="form.receipt_time"
-              valueFormat="YYYY-MM-DD"
-            />
+          <a-form-model-item label="付款截图">
+            <a-upload
+              list-type="picture-card"
+              :file-list="imgList_1"
+              :customRequest="(e) => cusImgUpload('imgList_1', e)"
+              :remove="
+                () => {
+                  imgList_1 = [];
+                }
+              "
+              @preview="toPreview"
+            >
+              <div v-if="!imgList_1.length">
+                <a-icon type="plus" />
+                <div class="ant-upload-text">上传</div>
+              </div>
+            </a-upload>
+            <!-- 图片预览 -->
+            <img-preview
+              v-model="previewVisible"
+              :urls="previewUrl"
+            ></img-preview>
           </a-form-model-item>
         </a-col>
         <a-col span="12">
-          <a-form-model-item label="收款账户">
-            <a-input v-model="form.receipt_account" allow-clear />
+          <a-form-model-item label="尾款截图">
+            <a-upload
+              list-type="picture-card"
+              :file-list="imgList_2"
+              :customRequest="(e) => cusImgUpload('imgList_2', e)"
+              :remove="
+                () => {
+                  imgList_2 = [];
+                }
+              "
+              @preview="toPreview"
+            >
+              <div v-if="!imgList_2.length">
+                <a-icon type="plus" />
+                <div class="ant-upload-text">上传</div>
+              </div>
+            </a-upload>
           </a-form-model-item>
         </a-col>
       </a-row>
+      <a-form-model-item
+        :label-col="{ span: 3 }"
+        :wrapper-col="{ span: 20 }"
+        label="尾款金额"
+      >
+        <a-input-number v-model="form.receipt_time" :min="0" />
+      </a-form-model-item>
       <a-form-model-item
         :label-col="{ span: 3 }"
         :wrapper-col="{ span: 20 }"
@@ -206,7 +221,8 @@ export default {
       loading: false,
       typeList: utils.mapToArray(taskTypeMap),
       payList: utils.mapToArray(payTypeMap),
-      imgList: [],
+      imgList_1: [],
+      imgList_2: [],
       askList: [],
       form: {},
       previewVisible: false,
@@ -237,7 +253,6 @@ export default {
           pay_type: this.R.pay_type,
           remark: this.R.remark,
           receipt_time: this.R.receipt_time,
-          receipt_account: this.R.receipt_account,
         };
         this.askList = this.R.detail_re
           ? [
@@ -249,13 +264,23 @@ export default {
               },
             ]
           : [];
-        this.imgList = this.R.pay_img
+        this.imgList_1 = this.R.pay_img
           ? [
               {
                 uid: utils.uuid(),
                 status: "done",
                 name: this.R.pay_img.split("/").pop(),
                 url: this.R.pay_img,
+              },
+            ]
+          : [];
+        this.receipt_account = this.R.receipt_account
+          ? [
+              {
+                uid: utils.uuid(),
+                status: "done",
+                name: this.R.receipt_account.split("/").pop(),
+                url: this.R.receipt_account,
               },
             ]
           : [];
@@ -268,12 +293,9 @@ export default {
     },
   },
   methods: {
-    cusAskUpload({ file }) {
-      this.askList = [file];
-    },
-    async cusImgUpload({ file }) {
+    async cusImgUpload(fileList, { file }) {
       file.url = await utils.getBase64(file);
-      this.imgList = [file];
+      this[fileList] = [file];
     },
     toPreview(e) {
       this.previewUrl = e.url;
@@ -283,11 +305,13 @@ export default {
       this.loading = true;
       Promise.all([
         upload.uploadList(this.askList, ["lywang"]),
-        upload.uploadList(this.imgList, ["lywang"]),
+        upload.uploadList(this.imgList_1, ["lywang"]),
+        upload.uploadList(this.imgList_2, ["lywang"]),
       ])
         .then(() => {
           this.form.detail_re = upload.getRources(this.askList)[0];
-          this.form.pay_img = upload.getRources(this.imgList)[0];
+          this.form.pay_img = upload.getRources(this.imgList_1)[0];
+          this.form.receipt_account = upload.getRources(this.imgList_2)[0];
           if (this.isEdit) {
             return OrderApi.update({ ...this.form }).then((res) => {
               this.$message.success("保存成功");

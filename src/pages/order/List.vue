@@ -65,6 +65,15 @@
           @click="toPreview(data)"
         />
       </template>
+      <template slot="wk_image" slot-scope="data">
+        <img
+          v-if="data"
+          :src="data"
+          alt="图片"
+          class="image"
+          @click="toPreview(data)"
+        />
+      </template>
       <template slot="ask" slot-scope="data">
         <a v-if="data" @click="toDownload(data)">下载附件</a>
         <span v-else>无附件</span>
@@ -188,9 +197,9 @@ const condition = [
   },
   {
     key: "classify_id",
-    type: "select",
+    type: "cascader",
     placeholder: "文档分类",
-    showSearch: true,
+    changeOnSelect: true,
     options: [],
     labelKey: "name",
     valueKey: "id",
@@ -274,12 +283,15 @@ const columns = [
     scopedSlots: { customRender: "image" },
   },
   {
-    title: "收款时间",
+    title: "尾款金额",
+    hidden: ["edit", "edit_admin"],
     dataIndex: "receipt_time",
   },
   {
-    title: "收款账户",
+    title: "尾款截图",
+    hidden: ["edit", "edit_admin"],
     dataIndex: "receipt_account",
+    scopedSlots: { customRender: "wk_image" },
   },
   {
     title: "详细要求",
@@ -377,8 +389,20 @@ export default {
       page: 1,
       pageSize: 200,
     }).then((res) => {
+      function fmtList(list, level = 1) {
+        return list.map((_) => {
+          _.level = level;
+          if (_.children && _.children.length) {
+            _.children = fmtList(_.children, level + 1);
+          } else {
+            _.isLeaf = true;
+            delete _.children;
+          }
+          return _;
+        });
+      }
       let temp = this.condition.find((_) => _.key == "classify_id");
-      this.classifyList = res.list;
+      this.classifyList = fmtList(res.list);
       if (temp) {
         temp.options = res.list;
       }
@@ -474,6 +498,14 @@ export default {
     _getList() {
       this.getStatistic();
       this.collection.loading = true;
+      const _search = JSON.parse(JSON.stringify(this.search));
+      if (_search && _search._date) {
+        _search.created_at = _search._date[0];
+        _search.end_time = _search._date[1];
+      }
+      if (_search && _search.classify_id) {
+        _search.classify_id = _search.classify_id.push();
+      }
       OrderApi.list(
         Object.assign(
           {},
@@ -483,7 +515,7 @@ export default {
             staff_name: this.isService ? this.$auth.user().name : undefined,
             edit_name: this.isEditor ? this.$auth.user().name : undefined,
           },
-          this.search
+          _search
         )
       ).then((res) => {
         this.collection.list = res.list;
@@ -492,10 +524,13 @@ export default {
       });
     },
     toExport() {
-      let _search = { ...this.search };
-      if (_search._date) {
+      const _search = JSON.parse(JSON.stringify(this.search));
+      if (_search && _search._date) {
         _search.created_at = _search._date[0];
         _search.end_time = _search._date[1];
+      }
+      if (_search && _search.classify_id) {
+        _search.classify_id = _search.classify_id.push();
       }
       OrderApi.export(
         Object.assign(

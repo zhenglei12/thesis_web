@@ -5,7 +5,14 @@
         v-model="search"
         :condition="condition"
         :collection="collection"
-      ></list-search>
+      >
+      </list-search>
+      <a-button
+        v-acl="'manuscript_bank-create'"
+        type="primary"
+        @click="toEdit()"
+        >新增稿件</a-button
+      >
     </div>
     <a-table
       :columns="columns"
@@ -21,14 +28,32 @@
       rowKey="id"
       @change="listChange"
     >
-      <template slot="status" slot-scope="data">
-        {{ orderStatusMap[data] }}
-      </template>
       <template slot="file" slot-scope="data">
         <a v-if="data" @click="toDownload(data)">下载稿件</a>
         <span v-else>未提交</span>
       </template>
+      <template slot="operate" slot-scope="data">
+        <div class="cus-nowrap">
+          <span v-acl="'manuscript_bank-update'">
+            <a-icon type="edit" title="编辑" @click="toEdit(data)" />
+            <a-divider type="vertical"></a-divider>
+          </span>
+          <span v-acl="'manuscript_bank-delete'" class="cus-pointer">
+            <a-popconfirm title="确认删除？" @confirm="toDelete(data.id)">
+              <a-icon type="delete" title="删除" />
+            </a-popconfirm>
+          </span>
+        </div>
+      </template>
     </a-table>
+
+    <!-- 上传稿件 -->
+    <cus-edit
+      v-model="editVisible"
+      :data="temp"
+      :classifyList="classifyList"
+      @refresh="_getList"
+    ></cus-edit>
   </div>
 </template>
 
@@ -67,11 +92,6 @@ const columns = [
     dataIndex: "classify.name",
   },
   {
-    title: "状态",
-    dataIndex: "status",
-    scopedSlots: { customRender: "status" },
-  },
-  {
     title: "稿件下载",
     dataIndex: "manuscript",
     scopedSlots: { customRender: "file" },
@@ -80,14 +100,22 @@ const columns = [
     title: "创建时间",
     dataIndex: "created_at",
   },
+  {
+    title: "操作",
+    scopedSlots: { customRender: "operate" },
+  },
 ];
 
 import listMixin from "@/mixins/list";
-import StatisticApi from "@/apis/statistic";
+import ManuscriptApi from "@/apis/manuscript";
 import PublicApi from "@/apis/public";
 import { orderStatusMap } from "../order/mapping";
+import CusEdit from "./Edit.vue";
 
 export default {
+  components: {
+    CusEdit,
+  },
   mixins: [listMixin],
   data() {
     return {
@@ -96,6 +124,8 @@ export default {
       orderStatusMap,
       amountCount: 0,
       receivedAmountCount: 0,
+      editVisible: false,
+      classifyList: [],
     };
   },
   created() {
@@ -123,13 +153,23 @@ export default {
     });
   },
   methods: {
+    toEdit(e) {
+      this.temp = e;
+      this.editVisible = true;
+    },
+    toDelete(e) {
+      ManuscriptApi.remove(e).then(() => {
+        this.$message.success("操作成功");
+        this._getList();
+      });
+    },
     _getList() {
       this.collection.loading = true;
-      const _search = { ...this.search };
+      const _search = JSON.parse(JSON.stringify(this.search));
       if (_search && _search.classify_id) {
-        _search.classify_id = _search.classify_id.push();
+        _search.classify_id = _search.classify_id.pop();
       }
-      StatisticApi.order(
+      ManuscriptApi.list(
         Object.assign(
           {},
           {
@@ -139,6 +179,10 @@ export default {
           _search
         )
       ).then((res) => {
+        res.list.forEach((_) => {
+          _.classify_id =
+            _.classify_id && _.classify_id.split(",").map((_) => +_);
+        });
         this.collection.list = res.list;
         this.collection.total = res.total;
         this.collection.loading = false;
