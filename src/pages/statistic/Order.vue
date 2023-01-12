@@ -86,6 +86,7 @@ import listMixin from "@/mixins/list";
 import StatisticApi from "@/apis/statistic";
 import PublicApi from "@/apis/public";
 import { orderStatusMap } from "../order/mapping";
+import Utils from "@/libs/utils";
 
 export default {
   mixins: [listMixin],
@@ -123,6 +124,11 @@ export default {
     });
   },
   methods: {
+    toDownload(e) {
+      Utils.download(e, e.split("/").pop()).then(() => {
+        this.$message.success("下载完成");
+      });
+    },
     _getList() {
       this.collection.loading = true;
       const _search = { ...this.search };

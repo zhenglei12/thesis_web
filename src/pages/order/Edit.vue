@@ -36,7 +36,7 @@
             <a-input-number
               v-model="form.amount"
               :min="0"
-              :disabled="isService && isEdit"
+              :disabled="$auth.isService && isEdit"
             />
           </a-form-model-item>
         </a-col>
@@ -190,7 +190,11 @@
         :wrapper-col="{ span: 20 }"
         label="尾款金额"
       >
-        <a-input-number v-model="form.receipt_time" :min="0" />
+        <a-input-number
+          v-model="form.receipt_time"
+          :min="0"
+          :disabled="!($auth.isAdmin || $auth.isFinance)"
+        />
       </a-form-model-item>
       <a-form-model-item
         :label-col="{ span: 3 }"
@@ -227,13 +231,7 @@ export default {
       form: {},
       previewVisible: false,
       previewUrl: "",
-      isService: false,
-      isEditor: false,
     };
-  },
-  created() {
-    let user = this.$auth.user();
-    this.isService = !!user.roles.find((_) => _.alias == "staff");
   },
   watch: {
     visible(e) {
@@ -274,7 +272,7 @@ export default {
               },
             ]
           : [];
-        this.receipt_account = this.R.receipt_account
+        this.imgList_2 = this.R.receipt_account
           ? [
               {
                 uid: utils.uuid(),

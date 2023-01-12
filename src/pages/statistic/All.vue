@@ -39,6 +39,11 @@ const condition = [
     key: "_date",
     type: "date-in",
   },
+  {
+    key: "submission_time",
+    type: "date",
+    placeholder: "截止日期",
+  },
 ];
 
 const columns = [
@@ -92,8 +97,8 @@ export default {
   methods: {
     _getList() {
       this.collection.loading = true;
-      let _search = { ...this.search };
-      if (_search._date) {
+      let _search = JSON.parse(JSON.stringify(this.search));
+      if (_search && _search._date) {
         _search.created_at = _search._date[0];
         _search.end_time = _search._date[1];
         delete _search._date;

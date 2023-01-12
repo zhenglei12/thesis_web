@@ -12,8 +12,16 @@
         <span>
           <span>总金额：{{ amountCount }}</span>
           <span>已回收金额：{{ receivedAmountCount }}</span>
+          <span>总尾款金额：{{ receiptAmountCount }}</span>
+          <span>总售后金额：{{ afterAmountCount }}</span>
         </span>
       </div>
+      <a-button
+        v-acl="'staff-statistics.export'"
+        type="primary"
+        @click="toExport()"
+        >导出</a-button
+      >
     </div>
     <a-table
       :columns="columns"
@@ -66,11 +74,20 @@ const columns = [
     title: "已回收金额",
     dataIndex: "received_amount",
   },
+  {
+    title: "尾款金额",
+    dataIndex: "receipt_time",
+  },
+  {
+    title: "售后金额",
+    dataIndex: "after_banlace",
+  },
 ];
 
 import listMixin from "@/mixins/list";
 import StatisticApi from "@/apis/statistic";
 import PublicApi from "@/apis/public";
+import Utils from "@/libs/utils";
 
 export default {
   mixins: [listMixin],
@@ -80,6 +97,8 @@ export default {
       columns,
       amountCount: 0,
       receivedAmountCount: 0,
+      receiptAmountCount: 0,
+      afterAmountCount: 0,
     };
   },
   created() {
@@ -92,10 +111,48 @@ export default {
     });
   },
   methods: {
+    toExport() {
+      let _search = JSON.parse(JSON.stringify(this.search));
+      if (_search && _search._date) {
+        _search.created_at = _search._date[0];
+        _search.end_time = _search._date[1];
+        delete _search._date;
+      }
+      StatisticApi.export(
+        Object.assign(
+          {},
+          {
+            page: this.collection.page,
+            pageSize: this.collection.pageSize,
+          },
+          _search
+        )
+      ).then((res) => {
+        if (res.type === "application/json") {
+          try {
+            const render = new FileReader();
+            render.readAsText(res);
+            render.onload = (e) => {
+              const json = JSON.parse(e.target.result);
+              this.$notification.error({
+                message: "业务错误",
+                description: json.message,
+              });
+            };
+          } catch {
+            // eslint-disable-next-line
+          }
+          return;
+        }
+        Utils.export(res, "订单列表").then(() => {
+          this.$message.success("下载完成");
+        });
+      });
+    },
     _getList() {
       this.collection.loading = true;
-      let _search = { ...this.search };
-      if (_search._date) {
+      let _search = JSON.parse(JSON.stringify(this.search));
+      if (_search && _search._date) {
         _search.created_at = _search._date[0];
         _search.end_time = _search._date[1];
         delete _search._date;
@@ -112,6 +169,8 @@ export default {
       ).then((res) => {
         this.amountCount = res.amount_count;
         this.receivedAmountCount = res.received_amount_count;
+        this.receiptAmountCount = res.receipt_amount_count;
+        this.afterAmountCount = res.after_amount_count;
         const list = res.list;
         list.data.forEach(
           (_, i) =>

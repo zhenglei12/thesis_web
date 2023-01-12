@@ -111,6 +111,7 @@ import ManuscriptApi from "@/apis/manuscript";
 import PublicApi from "@/apis/public";
 import { orderStatusMap } from "../order/mapping";
 import CusEdit from "./Edit.vue";
+import Utils from "../../libs/utils";
 
 export default {
   components: {
@@ -161,6 +162,11 @@ export default {
       ManuscriptApi.remove(e).then(() => {
         this.$message.success("操作成功");
         this._getList();
+      });
+    },
+    toDownload(e) {
+      Utils.download(e, e.split("/").pop()).then(() => {
+        this.$message.success("下载完成");
       });
     },
     _getList() {
