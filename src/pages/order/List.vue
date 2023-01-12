@@ -111,6 +111,10 @@
           </span>
           <span v-acl="'order-status'">
             <a-icon type="swap" title="修改状态" @click="toStatus(data)" />
+            <a-divider type="vertical"></a-divider>
+          </span>
+          <span v-acl="'order-after'">
+            <a-icon type="rocket" title="售后" @click="toAfter(data)" />
           </span>
         </div>
       </template>
@@ -152,6 +156,8 @@
     <img-preview v-model="previewVisible" :urls="previewUrl"></img-preview>
 
     <cus-log v-model="logVisible" :data="temp"></cus-log>
+
+    <cus-after v-model="afterVisible" :data="temp" />
   </div>
 </template>
 
@@ -211,9 +217,8 @@ const condition = [
     placeholder: "状态",
   },
   {
-    key: "created_at",
-    type: "date",
-    placeholder: "创建时间",
+    key: "_date",
+    type: "date-in",
   },
   {
     key: "submission_time",
@@ -294,6 +299,15 @@ const columns = [
     scopedSlots: { customRender: "wk_image" },
   },
   {
+    title: "财务审核",
+    dataIndex: "finance_check",
+    customRender: (data) => (data == 1 ? "是" : "否"),
+  },
+  {
+    title: "售后金额",
+    dataIndex: "after_banlace",
+  },
+  {
     title: "详细要求",
     dataIndex: "detail_re",
     scopedSlots: { customRender: "ask" },
@@ -339,6 +353,7 @@ import CusStatus from "./Status";
 import CusAllot from "./Allot";
 import CusUpload from "./Upload";
 import CusLog from "./Log";
+import CusAfter from "./After";
 import { taskTypeMap, orderStatusMap } from "./mapping";
 
 export default {
@@ -348,6 +363,7 @@ export default {
     CusStatus,
     CusUpload,
     CusLog,
+    CusAfter,
   },
   mixins: [listMixin],
   data() {
@@ -356,8 +372,6 @@ export default {
       columns,
       taskTypeMap,
       orderStatusMap,
-      isService: false,
-      isEditor: false,
       statistic: null,
       numbers: null,
       editVisible: false,
@@ -366,6 +380,7 @@ export default {
       previewVisible: false,
       uploadVisible: false,
       logVisible: false,
+      afterVisible: false,
       previewUrl: "",
       editorList: [],
       classifyList: [],
@@ -407,14 +422,10 @@ export default {
         temp.options = res.list;
       }
     });
-    let user = this.$auth.user();
-    this.isService = !!user.roles.find((_) => _.alias == "staff");
-    this.isEditor = !!user.roles.find((_) => _.alias == "edit");
-    this.isEditAdmain = !!user.roles.find((_) => _.alias == "edit_admin");
-    if (this.isService) {
+    if (this.$auth.isService) {
       this.condition = this.condition.filter((_) => _.key != "staff_name");
     }
-    if (this.isEditor) {
+    if (this.$auth.isEditor) {
       this.condition = this.condition.filter((_) => _.key != "edit_name");
       this.columns = this.columns.filter((_) => {
         if (_.hidden) {
@@ -423,7 +434,7 @@ export default {
         return true;
       });
     }
-    if (this.isEditAdmain) {
+    if (this.$auth.isEditAdmain) {
       this.columns = this.columns.filter((_) => {
         if (_.hidden) {
           return !~_.hidden.indexOf("edit_admin");
@@ -491,6 +502,10 @@ export default {
         this._getList();
       });
     },
+    toAfter(e) {
+      this.temp = e;
+      this.afterVisible = true;
+    },
     toLog(e) {
       this.temp = e;
       this.logVisible = true;
@@ -512,8 +527,10 @@ export default {
           {
             page: this.collection.page,
             pageSize: this.collection.pageSize,
-            staff_name: this.isService ? this.$auth.user().name : undefined,
-            edit_name: this.isEditor ? this.$auth.user().name : undefined,
+            staff_name: this.$auth.isService
+              ? this.$auth.user().name
+              : undefined,
+            edit_name: this.$auth.isEditor ? this.$auth.user().name : undefined,
           },
           _search
         )
@@ -538,8 +555,10 @@ export default {
           {
             page: this.collection.page,
             pageSize: this.collection.pageSize,
-            staff_name: this.isService ? this.$auth.user().name : undefined,
-            edit_name: this.isEditor ? this.$auth.user().name : undefined,
+            staff_name: this.$auth.isService
+              ? this.$auth.user().name
+              : undefined,
+            edit_name: this.$auth.isEditor ? this.$auth.user().name : undefined,
           },
           _search
         )

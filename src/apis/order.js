@@ -25,4 +25,5 @@ export default {
       format: false,
       responseType: "blob",
     }),
+  after: (data) => http.post("api/order/after", data),
 };
