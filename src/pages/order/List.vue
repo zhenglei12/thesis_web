@@ -287,11 +287,11 @@ const columns = [
     dataIndex: "pay_img",
     scopedSlots: { customRender: "image" },
   },
-  {
-    title: "尾款金额",
-    hidden: ["edit", "edit_admin"],
-    dataIndex: "receipt_time",
-  },
+  // {
+  //   title: "尾款金额",
+  //   hidden: ["edit", "edit_admin"],
+  //   dataIndex: "receipt_time",
+  // },
   {
     title: "尾款截图",
     hidden: ["edit", "edit_admin"],
@@ -384,6 +384,7 @@ export default {
       previewUrl: "",
       editorList: [],
       classifyList: [],
+      download: false,
     };
   },
   created() {
@@ -488,9 +489,15 @@ export default {
       this.previewVisible = true;
     },
     toDownload(e) {
-      Utils.download(e, e.split("/").pop()).then(() => {
-        this.$message.success("下载完成");
-      });
+      if (this.download) {
+        return this.$message.warn("正在下载...");
+      }
+      this.download = true;
+      Utils.download(e, e.split("/").pop())
+        .then(() => {
+          this.$message.success("下载完成");
+        })
+        .finally(() => (this.download = false));
     },
     toUpload(e) {
       this.temp = e;
