@@ -45,7 +45,13 @@
             <a-input-number
               v-model="form.received_amount"
               :min="0"
-              :disabled="!($auth.isFinance || $auth.isAdmin)"
+              :disabled="
+                !(
+                  $auth.isFinance ||
+                  $auth.isAdmin ||
+                  ($auth.isService && isEdit)
+                )
+              "
             />
           </a-form-model-item>
         </a-col>
