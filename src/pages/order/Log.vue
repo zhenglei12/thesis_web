@@ -20,6 +20,11 @@ import Utils from "../../libs/utils";
 
 export default {
   mixins: [detailMinxin],
+  data() {
+    return {
+      download: false,
+    };
+  },
   methods: {
     _getDetail(id) {
       return OrderApi.logs({
@@ -28,9 +33,15 @@ export default {
       });
     },
     toDownload(e) {
-      Utils.download(e, e.split("/").pop()).then(() => {
-        this.$message.success("下载完成");
-      });
+      if (this.download) {
+        return this.$message.warn("正在下载...");
+      }
+      this.download = true;
+      Utils.download(e, e.split("/").pop())
+        .then(() => {
+          this.$message.success("下载完成");
+        })
+        .finally(() => (this.download = false));
     },
   },
 };
