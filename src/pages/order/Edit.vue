@@ -49,7 +49,7 @@
                 !(
                   $auth.isFinance ||
                   $auth.isAdmin ||
-                  ($auth.isService && isEdit)
+                  !($auth.isService && isEdit)
                 )
               "
             />
