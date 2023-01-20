@@ -115,6 +115,10 @@
           </span>
           <span v-acl="'order-after'">
             <a-icon type="rocket" title="售后" @click="toAfter(data)" />
+            <a-divider type="vertical"></a-divider>
+          </span>
+          <span v-acl="'order-hard.grade'">
+            <a-icon type="stock" title="难度" @click="toGrade(data)" />
           </span>
         </div>
       </template>
@@ -157,7 +161,11 @@
 
     <cus-log v-model="logVisible" :data="temp"></cus-log>
 
+    <!-- 售后 -->
     <cus-after v-model="afterVisible" :data="temp" />
+
+    <!-- 难度 -->
+    <cus-grade v-model="gradeVisible" :data="temp" />
   </div>
 </template>
 
@@ -221,9 +229,9 @@ const condition = [
     type: "date-in",
   },
   {
-    key: "submission_time",
-    type: "date",
-    placeholder: "截止时间",
+    key: "_time",
+    type: "date-in",
+    placeholder: ["开始截止时间", "结束截止时间"],
   },
 ];
 
@@ -330,6 +338,10 @@ const columns = [
     dataIndex: "edit_name",
   },
   {
+    title: "难度等级",
+    dataIndex: "hard_grade",
+  },
+  {
     title: "备注",
     dataIndex: "remark",
   },
@@ -354,6 +366,7 @@ import CusAllot from "./Allot";
 import CusUpload from "./Upload";
 import CusLog from "./Log";
 import CusAfter from "./After";
+import CusGrade from "./Grade";
 import { taskTypeMap, orderStatusMap } from "./mapping";
 
 export default {
@@ -364,6 +377,7 @@ export default {
     CusUpload,
     CusLog,
     CusAfter,
+    CusGrade,
   },
   mixins: [listMixin],
   data() {
@@ -381,6 +395,7 @@ export default {
       uploadVisible: false,
       logVisible: false,
       afterVisible: false,
+      gradeVisible: false,
       previewUrl: "",
       editorList: [],
       classifyList: [],
@@ -513,6 +528,10 @@ export default {
       this.temp = e;
       this.afterVisible = true;
     },
+    toGrade(e) {
+      this.temp = e;
+      this.gradeVisible = true;
+    },
     toLog(e) {
       this.temp = e;
       this.logVisible = true;
@@ -524,6 +543,10 @@ export default {
       if (_search && _search._date) {
         _search.created_at = _search._date[0];
         _search.end_time = _search._date[1];
+      }
+      if (_search && _search._time) {
+        _search.submission_time = _search._date[0];
+        _search.submission_end_time = _search._date[1];
       }
       if (_search && _search.classify_id) {
         _search.classify_id = _search.classify_id.push();
@@ -552,6 +575,10 @@ export default {
       if (_search && _search._date) {
         _search.created_at = _search._date[0];
         _search.end_time = _search._date[1];
+      }
+      if (_search && _search._time) {
+        _search.submission_time = _search._date[0];
+        _search.submission_end_time = _search._date[1];
       }
       if (_search && _search.classify_id) {
         _search.classify_id = _search.classify_id.push();

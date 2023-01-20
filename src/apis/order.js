@@ -26,4 +26,5 @@ export default {
       responseType: "blob",
     }),
   after: (data) => http.post("api/order/after", data),
+  grade: (data) => http.post("api/order/hard_grade", data),
 };
