@@ -162,10 +162,10 @@
     <cus-log v-model="logVisible" :data="temp"></cus-log>
 
     <!-- 售后 -->
-    <cus-after v-model="afterVisible" :data="temp" />
+    <cus-after v-model="afterVisible" :data="temp" @refresh="_getList" />
 
     <!-- 难度 -->
-    <cus-grade v-model="gradeVisible" :data="temp" />
+    <cus-grade v-model="gradeVisible" :data="temp" @refresh="_getList" />
   </div>
 </template>
 
