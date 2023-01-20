@@ -46,11 +46,8 @@
               v-model="form.received_amount"
               :min="0"
               :disabled="
-                !(
-                  $auth.isFinance ||
-                  $auth.isAdmin ||
-                  !($auth.isService && isEdit)
-                )
+                !($auth.isFinance || $auth.isAdmin) ||
+                ($auth.isService && isEdit)
               "
             />
           </a-form-model-item>
