@@ -162,10 +162,10 @@
     <cus-log v-model="logVisible" :data="temp"></cus-log>
 
     <!-- 售后 -->
-    <cus-after v-model="afterVisible" :data="temp" />
+    <cus-after v-model="afterVisible" :data="temp" @refresh="_getList" />
 
     <!-- 难度 -->
-    <cus-grade v-model="gradeVisible" :data="temp" />
+    <cus-grade v-model="gradeVisible" :data="temp" @refresh="_getList" />
   </div>
 </template>
 
@@ -545,8 +545,8 @@ export default {
         _search.end_time = _search._date[1];
       }
       if (_search && _search._time) {
-        _search.submission_time = _search._date[0];
-        _search.submission_end_time = _search._date[1];
+        _search.submission_time = _search._time[0];
+        _search.submission_end_time = _search._time[1];
       }
       if (_search && _search.classify_id) {
         _search.classify_id = _search.classify_id.push();
