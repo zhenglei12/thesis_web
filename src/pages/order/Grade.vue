@@ -16,7 +16,7 @@
     >
       <a-form-model-item label="难度等级" required>
         <a-select
-          v-model="form.edit_name"
+          v-model="form.hard_grade"
           allowClear
           :dropdownMatchSelectWidth="false"
         >
