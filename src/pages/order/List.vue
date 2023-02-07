@@ -308,11 +308,13 @@ const columns = [
   },
   {
     title: "财务审核",
+    hidden: ["edit", "edit_admin"],
     dataIndex: "finance_check",
     customRender: (data) => (data == 1 ? "是" : "否"),
   },
   {
     title: "售后金额",
+    hidden: ["edit", "edit_admin"],
     dataIndex: "after_banlace",
   },
   {
@@ -450,7 +452,7 @@ export default {
         return true;
       });
     }
-    if (this.$auth.isEditAdmain) {
+    if (this.$auth.isEditAdmin) {
       this.columns = this.columns.filter((_) => {
         if (_.hidden) {
           return !~_.hidden.indexOf("edit_admin");
