@@ -452,7 +452,7 @@ export default {
         return true;
       });
     }
-    if (this.$auth.isEditAdmain) {
+    if (this.$auth.isEditAdmin) {
       this.columns = this.columns.filter((_) => {
         if (_.hidden) {
           return !~_.hidden.indexOf("edit_admin");
