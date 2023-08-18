@@ -1,10 +1,6 @@
 <template>
   <a-form-model layout="inline" :model="form">
-    <a-form-model-item
-      v-for="(item, index) in condition"
-      :key="index"
-      :label="item.label"
-    >
+    <a-form-model-item v-for="(item, index) in condition" :key="index" :label="item.label">
       <a-date-picker
         v-if="item.type === 'date'"
         v-model="form[item.key]"
@@ -124,7 +120,7 @@ export default {
 <style lang="less" scoped>
 .searchheader {
   &-select {
-    min-width: 120px;
+    min-width: 150px;
   }
 }
 </style>

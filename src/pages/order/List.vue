@@ -1,11 +1,7 @@
 <template>
   <div>
     <div class="cus-table-header">
-      <list-search
-        v-model="search"
-        :condition="condition"
-        :collection="collection"
-      ></list-search>
+      <list-search v-model="search" :condition="condition" :collection="collection"></list-search>
     </div>
     <div class="cus-table-header">
       <div class="statistic">
@@ -15,15 +11,11 @@
           <span>本月总金额：{{ statistic.month_amount_count }}</span>
           <span>已回收金额：{{ statistic.month_received_amount_count }}</span>
         </span>
-        <span v-if="numbers" v-acl="'order-count.num'"
-          >文字统计：{{ numbers }}</span
-        >
+        <span v-if="numbers" v-acl="'order-count.num'">文字统计：{{ numbers }}</span>
       </div>
       <a-button-group>
         <a-button v-acl="'order-export'" @click="toExport()">导出</a-button>
-        <a-button v-acl="'order-add'" type="primary" @click="toEdit()"
-          >新增</a-button
-        >
+        <a-button v-acl="'order-add'" type="primary" @click="toEdit()">新增</a-button>
       </a-button-group>
     </div>
     <a-table
@@ -50,29 +42,13 @@
         <p>旺旺名：{{ data.want_name }}</p>
       </template>
       <template slot="money" slot-scope="data">
-        {{
-          data.amount - data.received_amount > 0
-            ? data.amount - data.received_amount
-            : "已结清"
-        }}
+        {{ data.amount - data.received_amount > 0 ? data.amount - data.received_amount : "已结清" }}
       </template>
       <template slot="image" slot-scope="data">
-        <img
-          v-if="data"
-          :src="data"
-          alt="图片"
-          class="image"
-          @click="toPreview(data)"
-        />
+        <img v-if="data" :src="data" alt="图片" class="image" @click="toPreview(data)" />
       </template>
       <template slot="wk_image" slot-scope="data">
-        <img
-          v-if="data"
-          :src="data"
-          alt="图片"
-          class="image"
-          @click="toPreview(data)"
-        />
+        <img v-if="data" :src="data" alt="图片" class="image" @click="toPreview(data)" />
       </template>
       <template slot="ask" slot-scope="data">
         <a v-if="data" @click="toDownload(data)">下载附件</a>
@@ -128,26 +104,13 @@
     <cus-edit v-model="editVisible" :data="temp" @refresh="_getList"></cus-edit>
 
     <!-- 分配编辑 -->
-    <cus-allot
-      v-model="allotVisible"
-      :data="temp"
-      @refresh="_getList"
-    ></cus-allot>
+    <cus-allot v-model="allotVisible" :data="temp" @refresh="_getList"></cus-allot>
 
     <!-- 修改状态 -->
-    <cus-status
-      v-model="statusVisible"
-      :data="temp"
-      @refresh="_getList"
-    ></cus-status>
+    <cus-status v-model="statusVisible" :data="temp" @refresh="_getList"></cus-status>
 
     <!-- 上传稿件 -->
-    <cus-upload
-      v-model="uploadVisible"
-      :data="temp"
-      :classifyList="classifyList"
-      @refresh="_getList"
-    ></cus-upload>
+    <cus-upload v-model="uploadVisible" :data="temp" :classifyList="classifyList" @refresh="_getList"></cus-upload>
 
     <!-- 详情 -->
     <!-- <cus-detail
@@ -223,6 +186,18 @@ const condition = [
     type: "select",
     options: Utils.mapToArray(orderStatusMap),
     placeholder: "状态",
+  },
+  {
+    key: "finance_check",
+    type: "select",
+    options: Utils.mapToArray(financeCheckMap),
+    placeholder: "财务审核状态",
+  },
+  {
+    key: "receipt_account_type",
+    type: "select",
+    options: Utils.mapToArray(accountTypeMap),
+    placeholder: "收款户",
   },
   {
     key: "_date",
@@ -310,7 +285,7 @@ const columns = [
     title: "财务审核",
     hidden: ["edit", "edit_admin"],
     dataIndex: "finance_check",
-    customRender: (data) => (data == 1 ? "是" : "否"),
+    customRender: (data) => financeCheckMap[data] ?? "-",
   },
   {
     title: "售后金额",
@@ -369,7 +344,7 @@ import CusUpload from "./Upload";
 import CusLog from "./Log";
 import CusAfter from "./After";
 import CusGrade from "./Grade";
-import { taskTypeMap, orderStatusMap } from "./mapping";
+import { taskTypeMap, orderStatusMap, financeCheckMap, accountTypeMap } from "./mapping";
 
 export default {
   components: {
@@ -559,9 +534,7 @@ export default {
           {
             page: this.collection.page,
             pageSize: this.collection.pageSize,
-            staff_name: this.$auth.isService
-              ? this.$auth.user().name
-              : undefined,
+            staff_name: this.$auth.isService ? this.$auth.user().name : undefined,
             edit_name: this.$auth.isEditor ? this.$auth.user().name : undefined,
           },
           _search
@@ -591,9 +564,7 @@ export default {
           {
             page: this.collection.page,
             pageSize: this.collection.pageSize,
-            staff_name: this.$auth.isService
-              ? this.$auth.user().name
-              : undefined,
+            staff_name: this.$auth.isService ? this.$auth.user().name : undefined,
             edit_name: this.$auth.isEditor ? this.$auth.user().name : undefined,
           },
           _search
