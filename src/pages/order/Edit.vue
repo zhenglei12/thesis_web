@@ -137,7 +137,7 @@
                   imgList_1 = [];
                 }
               "
-              :disabled="!($auth.isFinance || $auth.isAdmin) || ($auth.isService && R.finance_check != -1)"
+              :disabled="!($auth.isFinance || $auth.isAdmin) && R.finance_check != -1"
               @preview="toPreview"
             >
               <div v-if="!imgList_1.length">
@@ -165,10 +165,7 @@
                   imgList_2 = [];
                 }
               "
-              :disabled="
-                !($auth.isFinance || $auth.isAdmin) ||
-                ($auth.isService && (R.finance_check != -1 || R.finance_check != 0))
-              "
+              :disabled="!($auth.isFinance || $auth.isAdmin) && R.finance_check != -1 && R.finance_check != 0"
               @preview="toPreview"
             >
               <div v-if="!imgList_2.length">
@@ -196,7 +193,7 @@
                   imgList_3 = [];
                 }
               "
-              :disabled="!($auth.isFinance || $auth.isAdmin) || ($auth.isService && R.finance_check == 1)"
+              :disabled="!($auth.isFinance || $auth.isAdmin) && R.finance_check == 1"
               @preview="toPreview"
             >
               <div v-if="!imgList_3.length">
