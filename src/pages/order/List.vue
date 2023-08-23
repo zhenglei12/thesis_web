@@ -257,7 +257,7 @@ const columns = [
   {
     title: "已收金额",
     hidden: ["edit", "edit_admin"],
-    dataIndex: "received_amount",
+    dataIndex: "received_all",
   },
   {
     title: "未收尾款",
