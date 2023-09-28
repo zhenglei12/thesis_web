@@ -45,6 +45,15 @@ const routes = [
         },
       },
       {
+        path: "user/department",
+        name: "user-department",
+        component: () => import("./pages/department/List"),
+        meta: {
+          group: "user",
+          acl: "department-list",
+        },
+      },
+      {
         path: "order",
         name: "task-order",
         component: () => import("./pages/order/List"),

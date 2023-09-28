@@ -254,7 +254,6 @@ export default {
           task_ask: this.R.task_ask,
           submission_time: this.R.submission_time,
           name: this.R.name,
-          // phone: this.R.phone,
           want_name: this.R.want_name,
           amount: this.R.amount,
           received_amount: this.R.received_amount,
