@@ -46,14 +46,14 @@
         <img v-if="data" :src="data" alt="图片" class="image" @click="toPreview(data)" />
       </template>
       <template slot="ask" slot-scope="data">
-        <a v-if="data" @click="toDownload(data, data.detail_re)">下载附件</a>
+        <a v-if="data.detail_re" @click="toDownload(data, data.detail_re)">下载附件</a>
         <span v-else>无附件</span>
       </template>
       <template slot="status" slot-scope="data">
         {{ orderStatusMap[data] }}
       </template>
       <template slot="file" slot-scope="data">
-        <a v-if="data" @click="toDownload(data, data.manuscript)">下载稿件</a>
+        <a v-if="data.manuscript" @click="toDownload(data, data.manuscript)">下载稿件</a>
         <span v-else>未提交</span>
       </template>
       <template slot="operate" slot-scope="data">
@@ -141,10 +141,10 @@ const condition = [
     key: "word_number",
     placeholder: "字数",
   },
-  {
-    key: "name",
-    placeholder: "客户姓名",
-  },
+  // {
+  //   key: "name",
+  //   placeholder: "客户姓名",
+  // },
   {
     key: "task_type",
     type: "select",
