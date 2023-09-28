@@ -1,19 +1,7 @@
 <template>
-  <a-modal
-    :visible="visible"
-    title="上传稿件"
-    destroyOnClose
-    :confirmLoading="loading"
-    @cancel="close"
-    @ok="submit"
-  >
-    <a-form-model
-      ref="form"
-      :model="form"
-      :label-col="{ span: 4 }"
-      :wrapper-col="{ span: 19 }"
-    >
-      <a-form-model-item label="内容类型" required>
+  <a-modal :visible="visible" title="上传稿件" destroyOnClose :confirmLoading="loading" @cancel="close" @ok="submit">
+    <a-form-model ref="form" :model="form" :label-col="{ span: 4 }" :wrapper-col="{ span: 19 }">
+      <!-- <a-form-model-item label="内容类型" required>
         <a-cascader
           :default-value="form.classify_id"
           v-model="form.classify_id"
@@ -28,12 +16,8 @@
       </a-form-model-item>
       <a-form-model-item label="字数" required>
         <a-input-number v-model="form.alter_word" :min="0" :precision="0" />
-      </a-form-model-item>
-      <a-upload-dragger
-        :fileList="fileList"
-        :customRequest="request"
-        :remove="remove"
-      >
+      </a-form-model-item> -->
+      <a-upload-dragger :fileList="fileList" :customRequest="request" :remove="remove">
         <p class="ant-upload-drag-icon">
           <a-icon type="inbox" />
         </p>

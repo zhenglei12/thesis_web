@@ -14,6 +14,7 @@ export const taskTypeMap = {
   2: "期刊发表",
   3: "PPT",
   4: "翻译",
+  6: "论文辅导",
   5: "其他",
 };
 
