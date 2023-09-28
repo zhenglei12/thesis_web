@@ -86,6 +86,7 @@ export default {
     },
     submit() {
       this.loading = true;
+      this.form.department_id = [...this.department_id].pop();
       if (this.isEdit) {
         return UserApi.update({ ...this.form })
           .then((res) => {

@@ -141,10 +141,10 @@ const condition = [
     key: "word_number",
     placeholder: "字数",
   },
-  {
-    key: "name",
-    placeholder: "客户姓名",
-  },
+  // {
+  //   key: "name",
+  //   placeholder: "客户姓名",
+  // },
   {
     key: "task_type",
     type: "select",
