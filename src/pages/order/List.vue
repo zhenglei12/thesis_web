@@ -435,11 +435,15 @@ export default {
         case "2":
           return "bg-pink";
         case "3":
-          return "bg-purple";
-        case "5":
           return "bg-blue";
         case "4":
           return "bg-green";
+        case "5":
+          return "bg-purple";
+        case "6":
+          return "bg-6";
+        case "7":
+          return "bg-7";
         default:
           break;
       }
@@ -617,6 +621,14 @@ export default {
 
   &-purple {
     background-color: #c08dc0;
+  }
+
+  &-6 {
+    background-color: #afdfe4;
+  }
+
+  &-7 {
+    background-color: #fab27b;
   }
 }
 
