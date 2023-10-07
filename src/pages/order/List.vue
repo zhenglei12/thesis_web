@@ -441,9 +441,9 @@ export default {
         case "5":
           return "bg-purple";
         case "6":
-          return "bg-burlywood";
+          return "bg-6";
         case "7":
-          return "bg-cadetblue";
+          return "bg-7";
         default:
           break;
       }
