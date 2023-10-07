@@ -36,11 +36,6 @@
       <template slot="type" slot-scope="data">
         {{ taskTypeMap[data] }}
       </template>
-      <template slot="user" slot-scope="data">
-        <p>名称：{{ data.name }}</p>
-        <!-- <p>电话：{{ data.phone }}</p> -->
-        <p>旺旺名：{{ data.want_name }}</p>
-      </template>
       <template slot="money" slot-scope="data">
         {{ data.amount - data.received_amount > 0 ? data.amount - data.received_amount : "已结清" }}
       </template>
@@ -51,14 +46,14 @@
         <img v-if="data" :src="data" alt="图片" class="image" @click="toPreview(data)" />
       </template>
       <template slot="ask" slot-scope="data">
-        <a v-if="data" @click="toDownload(data)">下载附件</a>
+        <a v-if="data.detail_re" @click="toDownload(data, data.detail_re)">下载附件</a>
         <span v-else>无附件</span>
       </template>
       <template slot="status" slot-scope="data">
         {{ orderStatusMap[data] }}
       </template>
       <template slot="file" slot-scope="data">
-        <a v-if="data" @click="toDownload(data)">下载稿件</a>
+        <a v-if="data.manuscript" @click="toDownload(data, data.manuscript)">下载稿件</a>
         <span v-else>未提交</span>
       </template>
       <template slot="operate" slot-scope="data">
@@ -146,10 +141,10 @@ const condition = [
     key: "word_number",
     placeholder: "字数",
   },
-  {
-    key: "name",
-    placeholder: "客户姓名",
-  },
+  // {
+  //   key: "name",
+  //   placeholder: "客户姓名",
+  // },
   {
     key: "task_type",
     type: "select",
@@ -160,6 +155,7 @@ const condition = [
     key: "staff_name",
     type: "select",
     placeholder: "客服名称",
+    showSearch: true,
     options: [],
     labelKey: "name",
     valueKey: "name",
@@ -168,6 +164,7 @@ const condition = [
     key: "edit_name",
     type: "select",
     placeholder: "编辑名称",
+    showSearch: true,
     options: [],
     labelKey: "name",
     valueKey: "name",
@@ -233,15 +230,6 @@ const columns = [
     dataIndex: "task_ask",
   },
   {
-    title: "客户",
-    scopedSlots: { customRender: "user" },
-  },
-  // {
-  //   title: "客户电话",
-  //   hidden: ["edit", "edit_admin"],
-  //   dataIndex: "phone",
-  // },
-  {
     title: "创建时间",
     dataIndex: "created_at",
   },
@@ -270,11 +258,6 @@ const columns = [
     dataIndex: "pay_img",
     scopedSlots: { customRender: "image" },
   },
-  // {
-  //   title: "尾款金额",
-  //   hidden: ["edit", "edit_admin"],
-  //   dataIndex: "receipt_time",
-  // },
   {
     title: "尾款截图",
     hidden: ["edit", "edit_admin"],
@@ -294,7 +277,7 @@ const columns = [
   },
   {
     title: "详细要求",
-    dataIndex: "detail_re",
+    // dataIndex: "detail_re",
     scopedSlots: { customRender: "ask" },
   },
   {
@@ -307,12 +290,12 @@ const columns = [
     dataIndex: "staff_name",
   },
   {
-    title: "文档分类",
-    dataIndex: "classify.name",
-  },
-  {
     title: "责任编辑",
     dataIndex: "edit_name",
+  },
+  {
+    title: "售后人员",
+    dataIndex: "after_name",
   },
   {
     title: "难度等级",
@@ -324,7 +307,7 @@ const columns = [
   },
   {
     title: "稿件下载",
-    dataIndex: "manuscript",
+    // dataIndex: "manuscript",
     scopedSlots: { customRender: "file" },
   },
   {
@@ -452,11 +435,15 @@ export default {
         case "2":
           return "bg-pink";
         case "3":
-          return "bg-purple";
-        case "5":
           return "bg-blue";
         case "4":
           return "bg-green";
+        case "5":
+          return "bg-purple";
+        case "6":
+          return "bg-6";
+        case "7":
+          return "bg-7";
         default:
           break;
       }
@@ -480,12 +467,12 @@ export default {
       this.previewUrl = e;
       this.previewVisible = true;
     },
-    toDownload(e) {
+    toDownload(item, url) {
       if (this.download) {
         return this.$message.warn("正在下载...");
       }
       this.download = true;
-      Utils.download(e, e.split("/").pop())
+      Utils.download(url, `${item.id}-${url.split("/").pop()}`)
         .then(() => {
           this.$message.success("下载完成");
         })
@@ -634,6 +621,14 @@ export default {
 
   &-purple {
     background-color: #c08dc0;
+  }
+
+  &-6 {
+    background-color: #afdfe4;
+  }
+
+  &-7 {
+    background-color: #fab27b;
   }
 }
 
