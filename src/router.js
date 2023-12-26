@@ -119,6 +119,15 @@ const routes = [
         name: "apply",
         component: () => import("./pages/order/Apply"),
     },
+    {
+        path: "/404",
+        name: "404",
+        component: () => import("./pages/exception/404"),
+    },
+    {
+        path: "*",
+        redirect: "/404",
+    },
 ];
 
 const router = new Router({
