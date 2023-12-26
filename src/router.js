@@ -14,6 +14,25 @@ Router.prototype.push = function push(location, onResolve, onReject) {
 
 const routes = [
     {
+        path: "/login",
+        name: "login",
+        component: () => import("./pages/Login"),
+    },
+    {
+        path: "/apply/:id",
+        name: "apply",
+        component: () => import("./pages/order/Apply"),
+    },
+    {
+        path: "/404",
+        name: "404",
+        component: () => import("./pages/exception/404"),
+    },
+    {
+        path: "*",
+        redirect: "/404",
+    },
+    {
         path: "/",
         component: () => import("./pages/Layout"),
         children: [
@@ -109,25 +128,7 @@ const routes = [
             },
         ],
     },
-    {
-        path: "/login",
-        name: "login",
-        component: () => import("./pages/Login"),
-    },
-    {
-        path: "/apply/:id",
-        name: "apply",
-        component: () => import("./pages/order/Apply"),
-    },
-    {
-        path: "/404",
-        name: "404",
-        component: () => import("./pages/exception/404"),
-    },
-    {
-        path: "*",
-        redirect: "/404",
-    },
+
 ];
 
 const router = new Router({
