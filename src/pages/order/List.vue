@@ -91,6 +91,9 @@
           <span v-acl="'order-hard.grade'">
             <a-icon type="stock" title="难度" @click="toGrade(data)" />
           </span>
+          <span>
+            <a-icon type="read" title="约稿单" @click="toApply(data.id)" />
+          </span>
         </div>
       </template>
     </a-table>
@@ -155,6 +158,15 @@ const condition = [
     key: "staff_name",
     type: "select",
     placeholder: "客服名称",
+    showSearch: true,
+    options: [],
+    labelKey: "name",
+    valueKey: "name",
+  },
+  {
+    key: "after_name",
+    type: "select",
+    placeholder: "售后人员",
     showSearch: true,
     options: [],
     labelKey: "name",
@@ -499,6 +511,10 @@ export default {
     toLog(e) {
       this.temp = e;
       this.logVisible = true;
+    },
+    toApply(e) {
+      this.temp = e;
+      this.applyVisible = true;
     },
     _getList() {
       this.getStatistic();
