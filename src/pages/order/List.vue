@@ -341,6 +341,7 @@ import CusUpload from "./Upload";
 import CusLog from "./Log";
 import CusAfter from "./After";
 import CusGrade from "./Grade";
+import CusApplyDetail from "./ApplyDetail.vue";
 import { taskTypeMap, orderStatusMap, financeCheckMap, accountTypeMap } from "./mapping";
 
 export default {
