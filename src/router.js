@@ -114,6 +114,11 @@ const routes = [
     name: "login",
     component: () => import("./pages/Login"),
   },
+  {
+    path: "/apply/:id",
+    name: "apply",
+    component: () => import("./pages/order/Apply"),
+  },
 ];
 
 const router = new Router({
