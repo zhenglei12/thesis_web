@@ -88,6 +88,9 @@
             <a-icon type="rocket" title="售后" @click="toAfter(data)" />
             <a-divider type="vertical"></a-divider>
           </span>
+          <span>
+            <a-icon type="read" title="约稿单" @click="toApply(data.id)" />
+          </span>
           <span v-acl="'order-hard.grade'">
             <a-icon type="stock" title="难度" @click="toGrade(data)" />
           </span>
@@ -124,6 +127,8 @@
 
     <!-- 难度 -->
     <cus-grade v-model="gradeVisible" :data="temp" @refresh="_getList" />
+    <!-- 约稿单 -->
+    <cus-apply-detail v-model="applyVisible" :data="temp" />
   </div>
 </template>
 
@@ -155,6 +160,15 @@ const condition = [
     key: "staff_name",
     type: "select",
     placeholder: "客服名称",
+    showSearch: true,
+    options: [],
+    labelKey: "name",
+    valueKey: "name",
+  },
+  {
+    key: "after_name",
+    type: "select",
+    placeholder: "售后人员",
     showSearch: true,
     options: [],
     labelKey: "name",
@@ -327,6 +341,7 @@ import CusUpload from "./Upload";
 import CusLog from "./Log";
 import CusAfter from "./After";
 import CusGrade from "./Grade";
+import CusApplyDetail from "./ApplyDetail.vue";
 import { taskTypeMap, orderStatusMap, financeCheckMap, accountTypeMap } from "./mapping";
 
 export default {
@@ -338,6 +353,7 @@ export default {
     CusLog,
     CusAfter,
     CusGrade,
+    CusApplyDetail
   },
   mixins: [listMixin],
   data() {
@@ -360,6 +376,7 @@ export default {
       editorList: [],
       classifyList: [],
       download: false,
+      applyVisible: false,
     };
   },
   created() {
@@ -371,6 +388,13 @@ export default {
     });
     PublicApi.roleUserList("edit").then((res) => {
       let temp = this.condition.find((_) => _.key == "edit_name");
+      this.editorList = res.list;
+      if (temp) {
+        temp.options = res.list;
+      }
+    });
+    PublicApi.roleUserList("after").then((res) => {
+      let temp = this.condition.find((_) => _.key == "after_name");
       this.editorList = res.list;
       if (temp) {
         temp.options = res.list;
@@ -499,6 +523,10 @@ export default {
     toLog(e) {
       this.temp = e;
       this.logVisible = true;
+    },
+    toApply(e) {
+      this.temp = e;
+      this.applyVisible = true;
     },
     _getList() {
       this.getStatistic();
