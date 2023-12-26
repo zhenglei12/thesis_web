@@ -90,6 +90,7 @@
           </span>
           <span>
             <a-icon type="read" title="约稿单" @click="toApply(data.id)" />
+            <a-divider type="vertical"></a-divider>
           </span>
           <span v-acl="'order-hard.grade'">
             <a-icon type="stock" title="难度" @click="toGrade(data)" />
@@ -358,6 +359,7 @@ export default {
   mixins: [listMixin],
   data() {
     return {
+      baseUrl: location.origin,
       condition,
       columns,
       taskTypeMap,
@@ -372,11 +374,11 @@ export default {
       logVisible: false,
       afterVisible: false,
       gradeVisible: false,
+      applyVisible: false,
       previewUrl: "",
       editorList: [],
       classifyList: [],
       download: false,
-      applyVisible: false,
     };
   },
   created() {
