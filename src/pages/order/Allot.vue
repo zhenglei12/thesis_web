@@ -12,9 +12,9 @@
       <a-form-model-item label="编辑人员">
         <a-select v-model="form.edit_name" allowClear :dropdownMatchSelectWidth="false" :options="editorOptions" />
       </a-form-model-item>
-      <a-form-model-item label="售后人员">
-        <a-select v-model="form.after_name" allowClear :dropdownMatchSelectWidth="false" :options="afterOptions" />
-      </a-form-model-item>
+<!--      <a-form-model-item label="售后人员">-->
+<!--        <a-select v-model="form.after_name" allowClear :dropdownMatchSelectWidth="false" :options="afterOptions" />-->
+<!--      </a-form-model-item>-->
     </a-form-model>
   </a-modal>
 </template>
