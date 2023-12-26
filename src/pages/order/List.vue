@@ -353,6 +353,7 @@ export default {
     CusLog,
     CusAfter,
     CusGrade,
+    CusApplyDetail
   },
   mixins: [listMixin],
   data() {
