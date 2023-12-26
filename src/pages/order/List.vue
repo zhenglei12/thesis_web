@@ -88,11 +88,11 @@
             <a-icon type="rocket" title="售后" @click="toAfter(data)" />
             <a-divider type="vertical"></a-divider>
           </span>
-          <span v-acl="'order-hard.grade'">
-            <a-icon type="stock" title="难度" @click="toGrade(data)" />
-          </span>
           <span>
             <a-icon type="read" title="约稿单" @click="toApply(data.id)" />
+          </span>
+          <span v-acl="'order-hard.grade'">
+            <a-icon type="stock" title="难度" @click="toGrade(data)" />
           </span>
         </div>
       </template>
@@ -127,6 +127,8 @@
 
     <!-- 难度 -->
     <cus-grade v-model="gradeVisible" :data="temp" @refresh="_getList" />
+    <!-- 约稿单 -->
+    <cus-apply-detail v-model="applyVisible" :data="temp" />
   </div>
 </template>
 
@@ -372,6 +374,7 @@ export default {
       editorList: [],
       classifyList: [],
       download: false,
+      applyVisible: false,
     };
   },
   created() {
@@ -383,6 +386,13 @@ export default {
     });
     PublicApi.roleUserList("edit").then((res) => {
       let temp = this.condition.find((_) => _.key == "edit_name");
+      this.editorList = res.list;
+      if (temp) {
+        temp.options = res.list;
+      }
+    });
+    PublicApi.roleUserList("after").then((res) => {
+      let temp = this.condition.find((_) => _.key == "after_name");
       this.editorList = res.list;
       if (temp) {
         temp.options = res.list;
