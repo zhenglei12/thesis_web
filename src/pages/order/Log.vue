@@ -1,7 +1,7 @@
 <template>
   <a-drawer :visible="visible" title="订单日志" @close="close">
     <a-timeline>
-      <a-timeline-item v-for="(item, index) in D.list" :key="index">
+      <a-timeline-item v-for="(item, index) in list.list" :key="index">
         <p>{{ item.created_at }}</p>
         <p>{{ item.remark }}</p>
         <p>
@@ -23,43 +23,44 @@ export default {
   data() {
     return {
       download: false,
-      // list: []
+       list: []
     };
   },
-  watch: {
-    visible(e) {
-      if (e) {
-        this._getDetail(this.R)
-      }
-    },
-  },
+  // watch: {
+  //   visible(e) {
+  //     if (e) {
+  //       this._getDetail(this.R)
+  //     }
+  //   },
+  // },
   methods: {
-    // _getDetail(id) {
-    //   OrderApi.logs({
-    //     id,
-    //     pageSize: 50,
-    //   });
-    //   //     .then((res) => {
-    //   //   this.list=res
-    //   // });
-    // },
     _getDetail(id) {
       return OrderApi.logs({
         id,
         pageSize: 50,
+      }).then((res) => {
+        this.list = res
       });
     },
-    toDownload(e) {
-      if (this.download) {
-        return this.$message.warn("正在下载...");
-      }
-      this.download = true;
-      Utils.download(e, e.split("/").pop())
+    // _getDetail(id) {
+    //   return OrderApi.logs({
+    //     id,
+    //     pageSize: 50,
+    //   });
+  // },
+  toDownload(e) {
+    if (this.download) {
+      return this.$message.warn("正在下载...");
+    }
+    this.download = true;
+    Utils.download(e, e.split("/").pop())
         .then(() => {
           this.$message.success("下载完成");
         })
         .finally(() => (this.download = false));
-    },
   },
-};
+}
+,
+}
+;
 </script>
