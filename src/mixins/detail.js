@@ -51,6 +51,7 @@ export default {
                     this.$refs.form.resetFields();
                 });
             }
+            this.D = {};
             this.$emit("visibleChange", false);
         }
     },
