@@ -34,14 +34,20 @@ export default {
     },
   },
   methods: {
+    // _getDetail(id) {
+    //   OrderApi.logs({
+    //     id,
+    //     pageSize: 50,
+    //   });
+    //   //     .then((res) => {
+    //   //   this.list=res
+    //   // });
+    // },
     _getDetail(id) {
-      OrderApi.logs({
+      return OrderApi.logs({
         id,
         pageSize: 50,
       });
-      //     .then((res) => {
-      //   this.list=res
-      // });
     },
     toDownload(e) {
       if (this.download) {
