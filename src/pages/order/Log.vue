@@ -23,7 +23,7 @@ export default {
   data() {
     return {
       download: false,
-      list: []
+      // list: []
     };
   },
   watch: {
@@ -38,9 +38,10 @@ export default {
       OrderApi.logs({
         id,
         pageSize: 50,
-      }).then((res) => {
-        this.list=res
       });
+      //     .then((res) => {
+      //   this.list=res
+      // });
     },
     toDownload(e) {
       if (this.download) {
