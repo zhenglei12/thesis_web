@@ -26,13 +26,13 @@ export default {
        list: []
     };
   },
-  watch: {
-    visible(e) {
-      if (e) {
-        this._getDetail(this.R)
-      }
-    },
-  },
+  // watch: {
+  //   visible(e) {
+  //     if (e) {
+  //       this._getDetail(this.R)
+  //     }
+  //   },
+  // },
   methods: {
     _getDetail(id) {
       return OrderApi.logs({
