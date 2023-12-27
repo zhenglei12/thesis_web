@@ -1,7 +1,7 @@
 <template>
   <a-drawer :visible="visible" title="订单日志" @close="close">
     <a-timeline>
-      <a-timeline-item v-for="(item, index) in list" :key="index">
+      <a-timeline-item v-for="(item, index) in D.list" :key="index">
         <p>{{ item.created_at }}</p>
         <p>{{ item.remark }}</p>
         <p>
@@ -34,14 +34,20 @@ export default {
     },
   },
   methods: {
+    // _getDetail(id) {
+    //   OrderApi.logs({
+    //     id,
+    //     pageSize: 50,
+    //   });
+    //   //     .then((res) => {
+    //   //   this.list=res
+    //   // });
+    // },
     _getDetail(id) {
-      OrderApi.logs({
+      return OrderApi.logs({
         id,
         pageSize: 50,
       });
-      //     .then((res) => {
-      //   this.list=res
-      // });
     },
     toDownload(e) {
       if (this.download) {
