@@ -79,6 +79,11 @@
             <a-input v-model="form.want_name" allow-clear />
           </a-form-model-item>
         </a-col>
+        <a-col span="12">
+          <a-form-model-item label="专业">
+            <a-input v-model="form.specialty" allow-clear />
+          </a-form-model-item>
+        </a-col>
       </a-row>
       <a-form-model-item :label-col="{ span: 3 }" :wrapper-col="{ span: 20 }" label="写作要求">
         <a-textarea v-model="form.task_ask" :autoSize="{ minRows: 3, maxRows: 5 }" placeholder="写作要求" />
@@ -265,6 +270,7 @@ export default {
           twice_time: this.R.twice_time,
           end_time: this.R.end_time,
           receipt_account_type: this.R.receipt_account_type && this.R.receipt_account_type.toString(),
+          specialty: this.R.specialty,
         };
         this.askList = this.R.detail_re
           ? [
