@@ -88,7 +88,7 @@
             <a-icon type="rocket" title="售后" @click="toAfter(data)" />
             <a-divider type="vertical"></a-divider>
           </span>
-          <span>
+          <span v-acl="'order-from.detail'">
             <a-icon type="read" title="约稿单" @click="toApply(data.id)" />
             <a-divider type="vertical"></a-divider>
           </span>
@@ -362,7 +362,7 @@ export default {
     CusLog,
     CusAfter,
     CusGrade,
-    CusApplyDetail
+    CusApplyDetail,
   },
   mixins: [listMixin],
   data() {
