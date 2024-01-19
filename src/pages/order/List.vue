@@ -88,7 +88,7 @@
             <a-icon type="rocket" title="售后" @click="toAfter(data)" />
             <a-divider type="vertical"></a-divider>
           </span>
-          <span>
+          <span v-acl="'order-from.detail'">
             <a-icon type="read" title="约稿单" @click="toApply(data.id)" />
             <a-divider type="vertical"></a-divider>
           </span>
@@ -185,6 +185,10 @@ const condition = [
     valueKey: "name",
   },
   {
+    key: "specialty",
+    placeholder: "专业",
+  },
+  {
     key: "classify_id",
     type: "cascader",
     placeholder: "文档分类",
@@ -251,6 +255,10 @@ const columns = [
   {
     title: "截止时间",
     dataIndex: "submission_time",
+  },
+  {
+    title: "专业",
+    dataIndex: "specialty",
   },
   {
     title: "订单总额",
@@ -354,7 +362,7 @@ export default {
     CusLog,
     CusAfter,
     CusGrade,
-    CusApplyDetail
+    CusApplyDetail,
   },
   mixins: [listMixin],
   data() {
