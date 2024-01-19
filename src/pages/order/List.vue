@@ -185,6 +185,10 @@ const condition = [
     valueKey: "name",
   },
   {
+    key: "specialty",
+    placeholder: "专业",
+  },
+  {
     key: "classify_id",
     type: "cascader",
     placeholder: "文档分类",
@@ -251,6 +255,10 @@ const columns = [
   {
     title: "截止时间",
     dataIndex: "submission_time",
+  },
+  {
+    title: "专业",
+    dataIndex: "specialty",
   },
   {
     title: "订单总额",
