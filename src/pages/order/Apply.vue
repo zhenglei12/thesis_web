@@ -10,11 +10,11 @@
         <a-col :sm="24" :md="12" :lg="8" :xl="6">
           <a-form-model-item label="论文级别" required>
             <a-select
-                v-model="form.grade"
-                allowClear
-                :dropdownMatchSelectWidth="false"
-                :options="levelOptions"
-                placeholder="请选择"
+              v-model="form.grade"
+              allowClear
+              :dropdownMatchSelectWidth="false"
+              :options="levelOptions"
+              placeholder="请选择"
             />
           </a-form-model-item>
         </a-col>
@@ -26,22 +26,22 @@
         <a-col :sm="24" :md="12" :lg="8" :xl="6">
           <a-form-model-item label="论文用途" required>
             <a-select
-                v-model="form.use"
-                allowClear
-                :dropdownMatchSelectWidth="false"
-                :options="useOpionts"
-                placeholder="请选择"
+              v-model="form.use"
+              allowClear
+              :dropdownMatchSelectWidth="false"
+              :options="useOpionts"
+              placeholder="请选择"
             />
           </a-form-model-item>
         </a-col>
         <a-col :sm="24" :md="12" :lg="8" :xl="6">
           <a-form-model-item label="论文语种" required>
             <a-select
-                v-model="form.language"
-                allowClear
-                :dropdownMatchSelectWidth="false"
-                :options="languageOptions"
-                placeholder="请选择"
+              v-model="form.language"
+              allowClear
+              :dropdownMatchSelectWidth="false"
+              :options="languageOptions"
+              placeholder="请选择"
             />
           </a-form-model-item>
         </a-col>
@@ -139,7 +139,7 @@ export default {
   },
   created() {
     const { id } = this.$route.params;
-    orderApi.applyDetail(id).then((res) => {
+    orderApi.pubApplyDetail(id).then((res) => {
       this.visible = !!res?.id;
     });
   },
