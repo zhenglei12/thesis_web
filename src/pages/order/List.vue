@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="main">
     <div class="cus-table-header">
       <list-search v-model="search" :condition="condition" :collection="collection"></list-search>
     </div>
@@ -18,92 +18,103 @@
         <a-button v-acl="'order-add'" type="primary" @click="toEdit()">新增</a-button>
       </a-button-group>
     </div>
-    <a-table
-      :columns="columns"
-      :data-source="collection.list"
-      :loading="collection.loading"
-      :pagination="{
-        total: collection.total,
-        current: collection.page,
-        pageSize: collection.pageSize,
-        showSizeChanger: true,
-      }"
-      :rowClassName="getRowClass"
-      bordered
-      rowKey="id"
-      @change="listChange"
-    >
-      <template slot="type" slot-scope="data">
-        {{ taskTypeMap[data] }}
-      </template>
-      <template slot="money" slot-scope="data">
-        {{ data.amount - data.received_amount > 0 ? data.amount - data.received_amount : "已结清" }}
-      </template>
-      <template slot="image" slot-scope="data">
-        <img v-if="data" :src="data" alt="图片" class="image" @click="toPreview(data)" />
-      </template>
-      <template slot="wk_image" slot-scope="data">
-        <img v-if="data" :src="data" alt="图片" class="image" @click="toPreview(data)" />
-      </template>
-      <template slot="ask" slot-scope="data">
-        <a v-if="data.detail_re" @click="toDownload(data, data.detail_re)">下载附件</a>
-        <span v-else>无附件</span>
-      </template>
-      <template slot="status" slot-scope="data">
-        {{ orderStatusMap[data] }}
-      </template>
-      <template slot="file" slot-scope="data">
-        <a v-if="data.manuscript" @click="toDownload(data, data.manuscript)">下载稿件</a>
-        <span v-else>未提交</span>
-      </template>
-      <template slot="operate" slot-scope="data">
-        <div class="cus-nowrap">
-          <span v-acl="'order-update'">
-            <a-icon type="edit" title="编辑" @click="toEdit(data)" />
-            <a-divider type="vertical"></a-divider>
-          </span>
-          <span v-acl="'order-edit.name'">
-            <a-icon type="api" title="分配编辑" @click="toAllot(data.id)" />
-            <a-divider type="vertical"></a-divider>
-          </span>
-          <span v-acl="'order-manuscript'">
-            <a-icon type="upload" title="上传稿件" @click="toUpload(data.id)" />
-            <a-divider type="vertical"></a-divider>
-          </span>
-          <span v-acl="'order-logs'">
-            <a-icon type="file" title="日志" @click="toLog(data.id)" />
-            <a-divider type="vertical"></a-divider>
-          </span>
-          <span v-acl="'order-delete'" class="cus-pointer">
-            <a-popconfirm title="确认删除？" @confirm="toDelete(data.id)">
-              <a-icon type="delete" title="删除" />
-            </a-popconfirm>
-            <a-divider type="vertical"></a-divider>
-          </span>
-          <span v-acl="'order-status'">
-            <a-icon type="swap" title="修改状态" @click="toStatus(data)" />
-            <a-divider type="vertical"></a-divider>
-          </span>
-          <span v-acl="'order-after'">
-            <a-icon type="rocket" title="售后" @click="toAfter(data)" />
-            <a-divider type="vertical"></a-divider>
-          </span>
-          <span v-acl="'order-from.detail'">
-            <a-icon type="read" title="约稿单" @click="toApply(data.id)" />
-            <a-divider type="vertical"></a-divider>
-          </span>
-          <span v-acl="'order-hard.grade'">
-            <a-icon type="stock" title="难度" @click="toGrade(data)" />
-          </span>
-        </div>
-      </template>
-    </a-table>
+    <div class="table-wrapper">
+      <a-table
+        :scroll="scroll"
+        :columns="columns"
+        :data-source="collection.list"
+        :loading="collection.loading"
+        :pagination="{
+          total: collection.total,
+          current: collection.page,
+          pageSize: collection.pageSize,
+          showSizeChanger: true,
+          pageSizeOptions: ['10', '30', '50', '100'],
+        }"
+        :rowClassName="getRowClass"
+        bordered
+        rowKey="id"
+        @change="listChange"
+      >
+        <template slot="type" slot-scope="data">
+          {{ taskTypeMap[data] }}
+        </template>
+        <template slot="money" slot-scope="data">
+          {{ data.amount - data.received_amount > 0 ? data.amount - data.received_amount : "已结清" }}
+        </template>
+        <template slot="image" slot-scope="data">
+          <img v-if="data" :src="data" alt="图片" class="image" @click="toPreview(data)" />
+        </template>
+        <template slot="wk_image" slot-scope="data">
+          <img v-if="data" :src="data" alt="图片" class="image" @click="toPreview(data)" />
+        </template>
+        <template slot="ask" slot-scope="data">
+          <a v-if="data.detail_re" @click="toDownload(data, data.detail_re)">下载附件</a>
+          <span v-else>无附件</span>
+        </template>
+        <template slot="status" slot-scope="data">
+          {{ orderStatusMap[data] }}
+        </template>
+        <template slot="file" slot-scope="data">
+          <a v-if="data.manuscript" @click="toDownload(data, data.manuscript)">下载稿件</a>
+          <span v-else>未提交</span>
+        </template>
+        <template slot="operate" slot-scope="data">
+          <div class="cus-nowrap">
+            <span v-acl="'order-update'">
+              <a-icon type="edit" title="编辑" @click="toEdit(data)" />
+              <a-divider type="vertical"></a-divider>
+            </span>
+            <span v-acl="'order-edit.name'">
+              <a-icon type="api" title="分配编辑" @click="toAllot(data.id, 'allotEditorVisible')" />
+              <a-divider type="vertical"></a-divider>
+            </span>
+            <span v-acl="'order-after.name'">
+              <a-icon type="api" title="分配售后" @click="toAllot(data.id, 'allotAfterVisible')" />
+              <a-divider type="vertical"></a-divider>
+            </span>
+            <span v-acl="'order-manuscript'">
+              <a-icon type="upload" title="上传稿件" @click="toUpload(data.id)" />
+              <a-divider type="vertical"></a-divider>
+            </span>
+            <span v-acl="'order-logs'">
+              <a-icon type="file" title="日志" @click="toLog(data.id)" />
+              <a-divider type="vertical"></a-divider>
+            </span>
+            <span v-acl="'order-delete'" class="cus-pointer">
+              <a-popconfirm title="确认删除？" @confirm="toDelete(data.id)">
+                <a-icon type="delete" title="删除" />
+              </a-popconfirm>
+              <a-divider type="vertical"></a-divider>
+            </span>
+            <span v-acl="'order-status'">
+              <a-icon type="swap" title="修改状态" @click="toStatus(data)" />
+              <a-divider type="vertical"></a-divider>
+            </span>
+            <span v-acl="'order-after'">
+              <a-icon type="rocket" title="售后" @click="toAfter(data)" />
+              <a-divider type="vertical"></a-divider>
+            </span>
+            <span v-acl="'order-from.detail'">
+              <a-icon type="read" title="约稿单" @click="toApply(data.id)" />
+              <a-divider type="vertical"></a-divider>
+            </span>
+            <span v-acl="'order-hard.grade'">
+              <a-icon type="stock" title="难度" @click="toGrade(data)" />
+            </span>
+          </div>
+        </template>
+      </a-table>
+    </div>
 
     <!-- 编辑 -->
     <cus-edit v-model="editVisible" :data="temp" @refresh="_getList"></cus-edit>
 
     <!-- 分配编辑 -->
-    <cus-allot v-model="allotVisible" :data="temp" @refresh="_getList"></cus-allot>
+    <cus-allot-editor v-model="allotEditorVisible" :data="temp" @refresh="_getList"></cus-allot-editor>
+
+    <!-- 分配售后 -->
+    <cus-allot-after v-model="allotAfterVisible" :data="temp" @refresh="_getList"></cus-allot-after>
 
     <!-- 修改状态 -->
     <cus-status v-model="statusVisible" :data="temp" @refresh="_getList"></cus-status>
@@ -189,6 +200,10 @@ const condition = [
     placeholder: "专业",
   },
   {
+    key: "task_ask",
+    placeholder: "任务要求",
+  },
+  {
     key: "classify_id",
     type: "cascader",
     placeholder: "文档分类",
@@ -230,19 +245,23 @@ const columns = [
   {
     title: "ID",
     dataIndex: "id",
+    width: 100,
   },
   {
     title: "任务类型",
     dataIndex: "task_type",
     scopedSlots: { customRender: "type" },
+    width: 100,
   },
   {
     title: "题目",
     dataIndex: "subject",
+    width: 100,
   },
   {
     title: "字数",
     dataIndex: "word_number",
+    width: 100,
   },
   {
     title: "任务要求",
@@ -251,91 +270,111 @@ const columns = [
   {
     title: "创建时间",
     dataIndex: "created_at",
+    width: 120,
   },
   {
     title: "截止时间",
     dataIndex: "submission_time",
+    width: 120,
   },
   {
     title: "专业",
     dataIndex: "specialty",
+    width: 100,
   },
   {
     title: "订单总额",
     hidden: ["edit", "edit_admin"],
     dataIndex: "amount",
+    width: 100,
   },
   {
     title: "已收金额",
     hidden: ["edit", "edit_admin"],
     dataIndex: "received_all",
+    width: 100,
   },
   {
     title: "未收尾款",
     hidden: ["edit", "edit_admin"],
     scopedSlots: { customRender: "money" },
+    width: 100,
   },
   {
     title: "付款截图",
     hidden: ["edit", "edit_admin"],
     dataIndex: "pay_img",
     scopedSlots: { customRender: "image" },
+    width: 100,
   },
   {
     title: "尾款截图",
     hidden: ["edit", "edit_admin"],
     dataIndex: "receipt_account",
     scopedSlots: { customRender: "wk_image" },
+    width: 100,
   },
   {
     title: "财务审核",
     hidden: ["edit", "edit_admin"],
     dataIndex: "finance_check",
     customRender: (data) => financeCheckMap[data] ?? "-",
+    width: 100,
   },
   {
     title: "售后金额",
     hidden: ["edit", "edit_admin"],
     dataIndex: "after_banlace",
+    width: 100,
   },
   {
     title: "详细要求",
     // dataIndex: "detail_re",
     scopedSlots: { customRender: "ask" },
+    width: 100,
   },
   {
     title: "状态",
     dataIndex: "status",
     scopedSlots: { customRender: "status" },
+    width: 100,
   },
   {
     title: "创建客服",
     dataIndex: "staff_name",
+    width: 100,
   },
   {
     title: "责任编辑",
     dataIndex: "edit_name",
+    width: 100,
   },
   {
     title: "售后人员",
     dataIndex: "after_name",
+    width: 100,
   },
   {
     title: "难度等级",
     dataIndex: "hard_grade",
+    width: 100,
   },
   {
     title: "备注",
+    hidden: ["edit", "edit_admin"],
     dataIndex: "remark",
+    width: 100,
   },
   {
     title: "稿件下载",
     // dataIndex: "manuscript",
     scopedSlots: { customRender: "file" },
+    width: 100,
   },
   {
     title: "操作",
     scopedSlots: { customRender: "operate" },
+    width: 350,
   },
 ];
 
@@ -345,7 +384,8 @@ import PublicApi from "../../apis/public";
 import Utils from "../../libs/utils";
 import CusEdit from "./Edit";
 import CusStatus from "./Status";
-import CusAllot from "./Allot";
+import CusAllotEditor from "./AllotEditor";
+import CusAllotAfter from "./AllotAfter";
 import CusUpload from "./Upload";
 import CusLog from "./Log";
 import CusAfter from "./After";
@@ -356,7 +396,8 @@ import { taskTypeMap, orderStatusMap, financeCheckMap, accountTypeMap } from "./
 export default {
   components: {
     CusEdit,
-    CusAllot,
+    CusAllotEditor,
+    CusAllotAfter,
     CusStatus,
     CusUpload,
     CusLog,
@@ -367,6 +408,7 @@ export default {
   mixins: [listMixin],
   data() {
     return {
+      scroll: undefined,
       baseUrl: location.origin,
       condition,
       columns,
@@ -376,7 +418,8 @@ export default {
       numbers: null,
       editVisible: false,
       statusVisible: false,
-      allotVisible: false,
+      allotEditorVisible: false,
+      allotAfterVisible: false,
       previewVisible: false,
       uploadVisible: false,
       logVisible: false,
@@ -453,7 +496,21 @@ export default {
       });
     }
   },
+  mounted() {
+    setTimeout(this.setScroll);
+    window.addEventListener("resize", this.setScroll);
+  },
+  beforeDestroy() {
+    window.removeEventListener("resize", this.setScroll);
+  },
   methods: {
+    setScroll() {
+      let tc = document.querySelector(".table-wrapper");
+      this.scroll = {
+        x: 3000,
+        y: tc.clientHeight - 105,
+      };
+    },
     getStatistic() {
       OrderApi.statistic().then((res) => {
         this.statistic = res;
@@ -486,12 +543,11 @@ export default {
       this.temp = e;
       this.statusVisible = true;
     },
-    toAllot(e) {
+    toAllot(e, key) {
       this.temp = {
         id: e,
-        editorList: this.editorList,
       };
-      this.allotVisible = true;
+      this[key] = true;
     },
     toEdit(e) {
       this.temp = e;
@@ -621,6 +677,18 @@ export default {
 </script>
 
 <style lang="less" scoped>
+.main {
+  height: 100%;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.table-wrapper {
+  flex: 1;
+  overflow: hidden;
+}
+
 .statistic {
   font-size: 20px;
   color: red;

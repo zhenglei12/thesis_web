@@ -12,9 +12,6 @@
       <a-form-model-item label="编辑人员">
         <a-select v-model="form.edit_name" allowClear :dropdownMatchSelectWidth="false" :options="editorOptions" />
       </a-form-model-item>
-      <a-form-model-item label="售后人员">
-        <a-select v-model="form.after_name" allowClear :dropdownMatchSelectWidth="false" :options="afterOptions" />
-      </a-form-model-item>
     </a-form-model>
   </a-modal>
 </template>
@@ -31,20 +28,12 @@ export default {
       loading: false,
       form: {},
       editorOptions: [],
-      afterOptions: [],
     };
   },
   created() {
     PublicApi.roleUserList("edit").then((res) => {
       console.log("编辑人员", res);
       this.editorOptions = res.list?.map((_) => ({
-        label: _.name,
-        value: _.name,
-      }));
-    });
-    PublicApi.roleUserList("after").then((res) => {
-      console.log("售后人员", res);
-      this.afterOptions = res.list?.map((_) => ({
         label: _.name,
         value: _.name,
       }));
@@ -62,7 +51,7 @@ export default {
   methods: {
     submit() {
       this.loading = true;
-      OrderApi.allot({ ...this.form })
+      OrderApi.allotEditor({ ...this.form })
         .then((res) => {
           this.$message.success("保存成功");
           this.$emit("refresh", res);

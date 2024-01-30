@@ -70,9 +70,7 @@
         <a-button type="link" @click="$auth.logout()">退出登录</a-button>
       </a-layout-header>
       <a-layout-content class="content">
-        <div class="wraper">
-          <router-view />
-        </div>
+        <router-view />
       </a-layout-content>
     </a-layout>
   </a-layout>
@@ -154,13 +152,9 @@ export default {
   }
 
   .content {
-    padding: "24px 16px";
-    overflow: "auto";
-
-    .wraper {
-      background: white;
-      padding: 16px;
-    }
+    background: white;
+    padding: 16px;
+    overflow: auto;
   }
 }
 </style>
