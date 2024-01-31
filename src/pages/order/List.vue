@@ -594,9 +594,7 @@ export default {
       this.temp = e;
       this.applyVisible = true;
     },
-    _getList() {
-      this.getStatistic();
-      this.collection.loading = true;
+    _search() {
       const _search = JSON.parse(JSON.stringify(this.search));
       if (_search && _search._date) {
         _search.created_at = _search._date[0];
@@ -609,6 +607,11 @@ export default {
       if (_search && _search.classify_id) {
         _search.classify_id = _search.classify_id.push();
       }
+      return _search;
+    },
+    _getList() {
+      this.getStatistic();
+      this.collection.loading = true;
       OrderApi.list(
         Object.assign(
           {},
@@ -618,7 +621,7 @@ export default {
             staff_name: this.$auth.isService ? this.$auth.user().name : undefined,
             edit_name: this.$auth.isEditor ? this.$auth.user().name : undefined,
           },
-          _search
+          this._search()
         )
       ).then((res) => {
         this.collection.list = res.list;
@@ -627,18 +630,6 @@ export default {
       });
     },
     toExport() {
-      const _search = JSON.parse(JSON.stringify(this.search));
-      if (_search && _search._date) {
-        _search.created_at = _search._date[0];
-        _search.end_time = _search._date[1];
-      }
-      if (_search && _search._time) {
-        _search.submission_time = _search._date[0];
-        _search.submission_end_time = _search._date[1];
-      }
-      if (_search && _search.classify_id) {
-        _search.classify_id = _search.classify_id.push();
-      }
       OrderApi.export(
         Object.assign(
           {},
@@ -648,7 +639,7 @@ export default {
             staff_name: this.$auth.isService ? this.$auth.user().name : undefined,
             edit_name: this.$auth.isEditor ? this.$auth.user().name : undefined,
           },
-          _search
+          this._search()
         )
       ).then((res) => {
         if (res.type === "application/json") {
