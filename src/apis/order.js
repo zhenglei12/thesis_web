@@ -12,7 +12,8 @@ export default {
     }),
   create: (data) => http.post("api/order/add", data),
   update: (data) => http.post("api/order/update", data),
-  allot: (data) => http.post("api/order/edit_name", data),
+  allotEditor: (data) => http.post("api/order/edit_name", data),
+  allotAfter: (data) => http.post("api/order/after_name", data),
   status: (data) => http.post("api/order/status", data),
   upload: (data) => http.post("api/order/manuscript", data),
   remove: (id) =>
