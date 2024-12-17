@@ -100,7 +100,7 @@
               <a-divider type="vertical"></a-divider>
             </span>
             <span v-acl="'order-hard.grade'">
-              <a-icon type="stock" title="难度" @click="toGrade(data)" />
+              <a-icon type="stock" title="尾款核验" @click="toGrade(data)" />
             </span>
           </div>
         </template>
@@ -137,7 +137,7 @@
     <!-- 售后 -->
     <cus-after v-model="afterVisible" :data="temp" @refresh="_getList" />
 
-    <!-- 难度 -->
+    <!-- 尾款核验 -->
     <cus-grade v-model="gradeVisible" :data="temp" @refresh="_getList" />
     <!-- 约稿单 -->
     <cus-apply-detail v-model="applyVisible" :data="temp" />
@@ -355,7 +355,7 @@ const columns = [
     width: 100,
   },
   {
-    title: "难度等级",
+    title: "尾款核验",
     dataIndex: "hard_grade",
     width: 100,
   },
