@@ -1,30 +1,17 @@
 <template>
   <a-modal
     :visible="visible"
-    title="难度"
+    title="尾款核验"
     destroyOnClose
     :maskClosable="false"
     :confirmLoading="loading"
     @cancel="close"
     @ok="submit"
   >
-    <a-form-model
-      ref="form"
-      :model="form"
-      :label-col="{ span: 4 }"
-      :wrapper-col="{ span: 19 }"
-    >
-      <a-form-model-item label="难度等级" required>
-        <a-select
-          v-model="form.hard_grade"
-          allowClear
-          :dropdownMatchSelectWidth="false"
-        >
-          <a-select-option
-            v-for="(option, index) in options"
-            :key="index"
-            :value="option"
-          >
+    <a-form-model ref="form" :model="form" :label-col="{ span: 4 }" :wrapper-col="{ span: 19 }">
+      <a-form-model-item label="尾款核验" required>
+        <a-select v-model="form.hard_grade" allowClear :dropdownMatchSelectWidth="false">
+          <a-select-option v-for="(option, index) in options" :key="index" :value="option">
             {{ option }}
           </a-select-option>
         </a-select>
@@ -43,7 +30,18 @@ export default {
     return {
       loading: false,
       form: {},
-      options: ["C1", "C2", "B1", "B2", "A1", "A2", "S1", "S2", "S3"],
+      options: [
+        "已结清",
+        "正文未开始",
+        "稿件已完成待追尾款",
+        "等通知",
+        "等客户资料",
+        "未到交稿时间",
+        "分三次付款",
+        "未交稿",
+        "需求改变",
+        "售后中（需调价/退款）",
+      ],
     };
   },
   watch: {
